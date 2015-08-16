@@ -23,4 +23,8 @@ _testmain.go
 *.test
 *.prof
 
+# Vim swap files
 *.swp
+
+# Default "go build" binary
+/ptu
