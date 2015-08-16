@@ -5,7 +5,7 @@ import (
 )
 
 func DisplayHelp(executableName string) {
-	log.Printf("Usage: %s [-u <ssh_username>] -s <ssh_server>[:<ssh_port>] -p <forward_port> -r <remote_host>[:<remote_port>]", executableName)
+	log.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [-t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password> -f]", executableName)
 }
 
 func DisplayNB() {
@@ -14,9 +14,9 @@ func DisplayNB() {
 	log.Print("NB!")
 }
 
-func DisplaySettings(sshUsername string, sshServer string, forwardPort int, remoteHost string) {
+func DisplaySettings(sshUsername string, sshServer string, exposePort int, targetHost string) {
 	log.Printf("SSH username : %s", sshUsername)
 	log.Printf("SSH server   : %s", sshServer)
-	log.Printf("Forward port : %d", forwardPort)
-	log.Printf("Remote host  : %s", remoteHost)
+	log.Printf("Expose port  : %d", exposePort)
+	log.Printf("Target host  : %s", targetHost)
 }

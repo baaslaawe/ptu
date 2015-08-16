@@ -20,14 +20,14 @@ func ParseCommandLineArguments() (string, string, int, string, error) {
 		return "", "", 0, "", err
 	}
 
+	var sshServer = flag.String("s", "", "SSH server (host[:port]) to connect")
+	var targetHost = flag.String("t", "127.0.0.1:22", "target host:port we will forward connections to")
+	var exposePort = flag.Int("e", 8080, "port to expose and forward on the SSH server side")
 	var sshUsername = flag.String("u", currentUser.Username, "username to connect SSH server")
-	var sshServer = flag.String("s", "127.0.0.1:22", "SSH server (host[:port]) to connect")
-	var forwardPort = flag.Int("p", 8080, "port to forward on the SSH server side")
-	var remoteHost = flag.String("r", "127.0.0.1:3000", "remote host:port to forward connection")
 
 	flag.Parse()
 
-	if (*forwardPort < TCPPortMIN) || (*forwardPort > TCPPortMAX) {
+	if (*exposePort < TCPPortMIN) || (*exposePort > TCPPortMAX) {
 		return "", "", 0, "", errors.New("forwarded port number is not in the valid range")
 	}
 
@@ -35,9 +35,9 @@ func ParseCommandLineArguments() (string, string, int, string, error) {
 		*sshServer = strings.Join([]string{*sshServer, strconv.Itoa(DefaultSSHPort)}, ":")
 	}
 
-	if !HostWithPortRegexp.MatchString(*remoteHost) {
-		*remoteHost = strings.Join([]string{*remoteHost, strconv.Itoa(*forwardPort)}, ":")
+	if !HostWithPortRegexp.MatchString(*targetHost) {
+		*targetHost = strings.Join([]string{*targetHost, strconv.Itoa(*exposePort)}, ":")
 	}
 
-	return *sshUsername, *sshServer, *forwardPort, *remoteHost, nil
+	return *sshServer, *targetHost, *exposePort, *sshUsername, nil
 }

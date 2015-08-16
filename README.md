@@ -24,7 +24,7 @@ just grab and use it right away **without** involving your IT department.
 
 #### Usage
 ```
-ptu <ssh_server>[:<ssh_port>] [OPTIONS]
+ptu -s <ssh_server>[:<ssh_port>] [OPTIONS]
 ```
 ###### Options
 `-t <target_host>:<target_port>`<br />
