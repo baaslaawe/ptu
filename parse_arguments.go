@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"flag"
-	"os/user"
 	"strconv"
 	"strings"
 )
@@ -15,19 +14,18 @@ func IsHelpRequested(argument string) bool {
 
 // Parse command line arguments, perform some initial validation and variable mutation
 func ParseCommandLineArguments() (string, string, int, string, error) {
-	currentUser, err := user.Current()
-	if err != nil {
-		return "", "", 0, "", err
-	}
-
-	var sshServer = flag.String("s", "", "SSH server (host[:port]) to connect")
-	var targetHost = flag.String("t", "127.0.0.1:22", "target host:port we will forward connections to")
-	var exposePort = flag.Int("e", 8080, "port to expose and forward on the SSH server side")
-	var sshUsername = flag.String("u", currentUser.Username, "username to connect SSH server")
+	var sshServer = flag.String("s", DefaultSSHServer, "SSH server (host[:port]) to connect")
+	var targetHost = flag.String("t", DefaultTargetHost, "target host:port we will forward connections to")
+	var exposedPort = flag.Int("e", DefaultExposedPort, "port to expose and forward on the SSH server side")
+	var sshUsername = flag.String("u", DefaultSSHUsername, "username to connect SSH server")
 
 	flag.Parse()
 
-	if (*exposePort < TCPPortMIN) || (*exposePort > TCPPortMAX) {
+	if *sshServer == DummySSHServer {
+		return "", "", 0, "", errors.New("SSH server not defined")
+	}
+
+	if (*exposedPort < TCPPortMIN) || (*exposedPort > TCPPortMAX) {
 		return "", "", 0, "", errors.New("forwarded port number is not in the valid range")
 	}
 
@@ -36,8 +34,8 @@ func ParseCommandLineArguments() (string, string, int, string, error) {
 	}
 
 	if !HostWithPortRegexp.MatchString(*targetHost) {
-		*targetHost = strings.Join([]string{*targetHost, strconv.Itoa(*exposePort)}, ":")
+		*targetHost = strings.Join([]string{*targetHost, strconv.Itoa(*exposedPort)}, ":")
 	}
 
-	return *sshServer, *targetHost, *exposePort, *sshUsername, nil
+	return *sshServer, *targetHost, *exposedPort, *sshUsername, nil
 }

@@ -12,17 +12,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	sshServer, targetHost, exposePort, sshUsername, err := ParseCommandLineArguments()
+	sshServer, targetHost, exposedPort, sshUsername, err := ParseCommandLineArguments()
 	if err != nil {
 		log.Fatalf("Error while parsing command line arguments: %s", err)
 	}
 
 	DisplayNB()
 
-	DisplaySettings(sshUsername, sshServer, exposePort, targetHost)
+	DisplaySettings(sshUsername, sshServer, exposedPort, targetHost)
 
 	// Initialize SSH listener 0.0.0.0:<expose_port> on the SSH server <ssh_server>:<ssh_port>
-	sshListener, err := InitializeSSHListener(sshUsername, sshServer, exposePort)
+	sshListener, err := InitializeSSHListener(sshUsername, sshServer, exposedPort)
 	if err != nil {
 		log.Fatalf("Error initializing SSH listener %s", err)
 	}

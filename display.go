@@ -14,9 +14,9 @@ func DisplayNB() {
 	log.Print("NB!")
 }
 
-func DisplaySettings(sshUsername string, sshServer string, exposePort int, targetHost string) {
+func DisplaySettings(sshUsername string, sshServer string, exposedPort int, targetHost string) {
 	log.Printf("SSH username : %s", sshUsername)
 	log.Printf("SSH server   : %s", sshServer)
-	log.Printf("Expose port  : %d", exposePort)
+	log.Printf("Exposed port : %d", exposedPort)
 	log.Printf("Target host  : %s", targetHost)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 // Initialize SSH listener 0.0.0.0:<forward_port> for connection forwarding
-func InitializeSSHListener(sshUsername string, sshServer string, exposePort int) (net.Listener, error) {
+func InitializeSSHListener(sshUsername string, sshServer string, exposedPort int) (net.Listener, error) {
 	sshAgentConn, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func InitializeSSHListener(sshUsername string, sshServer string, exposePort int)
 		return nil, err
 	}
 
-	forwardListenTo := strings.Join([]string{"0.0.0.0", strconv.Itoa(exposePort)}, ":")
+	forwardListenTo := strings.Join([]string{"0.0.0.0", strconv.Itoa(exposedPort)}, ":")
 	sshListener, err := sshClient.Listen("tcp", forwardListenTo)
 	if err != nil {
 		return nil, err
