@@ -6,16 +6,17 @@ import (
 	"os/user"
 )
 
-const (
-	DummySSHServer  = "not.a.real.server"
-	BaseExposedPort = 10000
-)
-
 var (
 	DefaultSSHServer   = DummySSHServer
 	DefaultTargetHost  = "localhost:22"
 	DefaultExposedPort = GetDefaultExposedPort()
 	DefaultSSHUsername = GetDefaultSSHUsername()
+)
+
+const (
+	DummySSHServer  = "not.a.real.server"
+	BaseExposedPort = 10000
+	DefaultSSHPort  = 22
 )
 
 func GetDefaultExposedPort() int {

@@ -8,7 +8,7 @@ import (
 func main() {
 	// Some tender erotic foreplay
 	if len(os.Args) < 2 || IsHelpRequested(os.Args[1]) {
-		DisplayHelp(os.Args[0])
+		DisplayHelp()
 		os.Exit(1)
 	}
 

@@ -4,8 +4,10 @@ import (
 	"log"
 )
 
-func DisplayHelp(executableName string) {
-	log.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [-t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password> -f]", executableName)
+func DisplayHelp() {
+	log.Printf("%s %s", NAME, VERSION)
+	log.Printf("--")
+	log.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [-t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password> -f]", NAME)
 }
 
 func DisplayNB() {
