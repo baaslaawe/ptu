@@ -13,29 +13,56 @@ func IsHelpRequested(argument string) bool {
 }
 
 // Parse command line arguments, perform some initial validation and variable mutation
-func ParseCommandLineArguments() (string, string, int, string, error) {
+func ParseCommandLineArguments() (*Config, error) {
 	var sshServer = flag.String("s", DefaultSSHServer, "SSH server (host[:port]) to connect")
-	var targetHost = flag.String("t", DefaultTargetHost, "target host:port we will forward connections to")
-	var exposedPort = flag.Int("e", DefaultExposedPort, "port to expose and forward on the SSH server side")
 	var sshUsername = flag.String("u", DefaultSSHUsername, "username to connect SSH server")
+	var sshPassword = flag.String("p", DefaultSSHPassword, "password to authenticate against SSH server")
+	var targetHost = flag.String("t", DefaultTargetHost, "target host:port we will forward connections to")
+	var exposedHost = flag.String("l", DefaultExposedHost, "host/bind (listener) to expose on the SSH server side")
+	var exposedPort = flag.Int("e", DefaultExposedPort, "port to expose and forward on the SSH server side")
+	var failOnNetworkErrors = flag.Bool("f", false, "fail on network errors?")
 
 	flag.Parse()
 
-	if *sshServer == DummySSHServer {
-		return "", "", 0, "", errors.New("SSH server not defined")
+	if !isSSHServerSet(*sshServer) {
+		return nil, errors.New("SSH server not defined")
 	}
 
-	if (*exposedPort < TCPPortMIN) || (*exposedPort > TCPPortMAX) {
-		return "", "", 0, "", errors.New("forwarded port number is not in the valid range")
+	if !isTCPPortValid(*exposedPort) {
+		return nil, errors.New("exposed TCP port number is invalid")
 	}
 
-	if !HostWithPortRegexp.MatchString(*sshServer) {
-		*sshServer = strings.Join([]string{*sshServer, strconv.Itoa(DefaultSSHPort)}, ":")
+	if !isHostWithPort(*sshServer) {
+		*sshServer = concatHostPort(*sshServer, DefaultSSHPort)
 	}
 
-	if !HostWithPortRegexp.MatchString(*targetHost) {
-		*targetHost = strings.Join([]string{*targetHost, strconv.Itoa(*exposedPort)}, ":")
+	if !isHostWithPort(*targetHost) {
+		*targetHost = concatHostPort(*targetHost, DefaultTargetPort)
 	}
 
-	return *sshServer, *targetHost, *exposedPort, *sshUsername, nil
+	config := &Config{
+		sshServer:           *sshServer,
+		sshUsername:         *sshUsername,
+		sshPassword:         *sshPassword,
+		sshUseAgent:         !isSSHPasswordSet(*sshPassword),
+		targetHost:          *targetHost,
+		exposedHost:         *exposedHost,
+		exposedPort:         *exposedPort,
+		exposedBind:         concatHostPort(*exposedHost, *exposedPort),
+		failOnNetworkErrors: *failOnNetworkErrors,
+	}
+
+	return config, nil
+}
+
+func isSSHServerSet(s string) bool { return s != DummySSHServer }
+
+func isSSHPasswordSet(s string) bool { return s != DummySSHPassword }
+
+func isTCPPortValid(i int) bool { return !(i < TCPPortMIN) || (i > TCPPortMAX) }
+
+func isHostWithPort(s string) bool { return HostWithPortRegexp.MatchString(s) }
+
+func concatHostPort(host string, port int) string {
+	return strings.Join([]string{host, strconv.Itoa(port)}, ":")
 }

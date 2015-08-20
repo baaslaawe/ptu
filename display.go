@@ -16,9 +16,11 @@ func DisplayNB() {
 	log.Print("NB!")
 }
 
-func DisplaySettings(sshUsername string, sshServer string, exposedPort int, targetHost string) {
-	log.Printf("SSH username : %s", sshUsername)
-	log.Printf("SSH server   : %s", sshServer)
-	log.Printf("Exposed port : %d", exposedPort)
-	log.Printf("Target host  : %s", targetHost)
+func DisplayConfig(config Config) {
+	log.Printf("SSH server             : %s", config.sshServer)
+	log.Printf("SSH username           : %s", config.sshUsername)
+	log.Printf("SSH use agent          : %s", config.sshUseAgent)
+	log.Printf("Exposed bind           : %s", config.exposedBind)
+	log.Printf("Target host            : %s", config.targetHost)
+	log.Printf("Fail on network errors : %s", config.failOnNetworkErrors)
 }

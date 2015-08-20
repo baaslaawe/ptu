@@ -8,22 +8,26 @@ import (
 
 var (
 	DefaultSSHServer   = DummySSHServer
+	DefaultSSHUsername = getDefaultSSHUsername()
+	DefaultSSHPassword = DummySSHPassword
 	DefaultTargetHost  = "localhost:22"
-	DefaultExposedPort = GetDefaultExposedPort()
-	DefaultSSHUsername = GetDefaultSSHUsername()
+	DefaultExposedHost = "0.0.0.0"
+	DefaultExposedPort = getDefaultExposedPort()
 )
 
 const (
-	DummySSHServer  = "not.a.real.server"
-	BaseExposedPort = 10000
-	DefaultSSHPort  = 22
+	DummySSHServer    = "not.a.real.server"
+	DummySSHPassword  = ""
+	BaseExposedPort   = 10000
+	DefaultSSHPort    = 22
+	DefaultTargetPort = 80
 )
 
-func GetDefaultExposedPort() int {
+func getDefaultExposedPort() int {
 	return BaseExposedPort + rand.Intn(10000)
 }
 
-func GetDefaultSSHUsername() string {
+func getDefaultSSHUsername() string {
 	currentUser, err := user.Current()
 	if err != nil {
 		log.Panicf("Unable to get current user name!")
