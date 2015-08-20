@@ -4,6 +4,7 @@ import (
 	"log"
 	"math/rand"
 	"os/user"
+	"time"
 )
 
 var (
@@ -24,6 +25,7 @@ const (
 )
 
 func getDefaultExposedPort() int {
+	rand.Seed(time.Now().UnixNano())
 	return BaseExposedPort + rand.Intn(10000)
 }
 

@@ -7,7 +7,9 @@ import (
 func DisplayHelp() {
 	log.Printf("%s %s", NAME, VERSION)
 	log.Printf("--")
-	log.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [-t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password> -f]", NAME)
+	log.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [OPTIONS]", NAME)
+	log.Printf("--")
+	log.Printf("OPTIONS := -t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password>")
 }
 
 func DisplayNB() {
@@ -19,8 +21,7 @@ func DisplayNB() {
 func DisplayConfig(config Config) {
 	log.Printf("SSH server             : %s", config.sshServer)
 	log.Printf("SSH username           : %s", config.sshUsername)
-	log.Printf("SSH use agent          : %s", config.sshUseAgent)
+	log.Printf("SSH use agent          : %v", config.sshUseAgent)
 	log.Printf("Exposed bind           : %s", config.exposedBind)
 	log.Printf("Target host            : %s", config.targetHost)
-	log.Printf("Fail on network errors : %s", config.failOnNetworkErrors)
 }

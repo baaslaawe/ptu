@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-// Initialize SSH listener 0.0.0.0:<forward_port> for connection forwarding
+// Initialize SSH client (our transport backbone)
 func InitSSHClient(config Config) (*ssh.Client, error) {
 	sshAuth, err := getSSHAuth(config)
 	if err != nil {
@@ -18,6 +18,7 @@ func InitSSHClient(config Config) (*ssh.Client, error) {
 		User: config.sshUsername,
 		Auth: sshAuth,
 	}
+
 	sshClient, err := ssh.Dial("tcp", config.sshServer, sshClientConfig)
 	if err != nil {
 		return nil, err
@@ -41,7 +42,7 @@ func getSSHAuth(config Config) ([]ssh.AuthMethod, error) {
 		}
 
 		return []ssh.AuthMethod{ssh.PublicKeys(sshAgentSigners...)}, nil
-	} else {
-		return []ssh.AuthMethod{ssh.Password(config.sshPassword)}, nil
 	}
+
+	return []ssh.AuthMethod{ssh.Password(config.sshPassword)}, nil
 }

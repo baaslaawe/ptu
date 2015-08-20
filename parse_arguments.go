@@ -20,7 +20,6 @@ func ParseCommandLineArguments() (*Config, error) {
 	var targetHost = flag.String("t", DefaultTargetHost, "target host:port we will forward connections to")
 	var exposedHost = flag.String("l", DefaultExposedHost, "host/bind (listener) to expose on the SSH server side")
 	var exposedPort = flag.Int("e", DefaultExposedPort, "port to expose and forward on the SSH server side")
-	var failOnNetworkErrors = flag.Bool("f", false, "fail on network errors?")
 
 	flag.Parse()
 
@@ -41,15 +40,14 @@ func ParseCommandLineArguments() (*Config, error) {
 	}
 
 	config := &Config{
-		sshServer:           *sshServer,
-		sshUsername:         *sshUsername,
-		sshPassword:         *sshPassword,
-		sshUseAgent:         !isSSHPasswordSet(*sshPassword),
-		targetHost:          *targetHost,
-		exposedHost:         *exposedHost,
-		exposedPort:         *exposedPort,
-		exposedBind:         concatHostPort(*exposedHost, *exposedPort),
-		failOnNetworkErrors: *failOnNetworkErrors,
+		sshServer:   *sshServer,
+		sshUsername: *sshUsername,
+		sshPassword: *sshPassword,
+		sshUseAgent: !isSSHPasswordSet(*sshPassword),
+		targetHost:  *targetHost,
+		exposedHost: *exposedHost,
+		exposedPort: *exposedPort,
+		exposedBind: concatHostPort(*exposedHost, *exposedPort),
 	}
 
 	return config, nil

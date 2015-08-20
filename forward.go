@@ -10,12 +10,12 @@ import (
 func Forward(sshListener net.Listener, targetHost string) {
 	sshConn, err := sshListener.Accept()
 	if err != nil {
-		log.Fatalf("Error accepting connection on SSH listener: %s", err)
+		log.Printf("Error accepting connection on SSH listener: %s", err)
 	}
 
 	remoteConn, err := net.Dial("tcp", targetHost)
 	if err != nil {
-		log.Fatalf("Error establishing remote host connection: %s", err)
+		log.Printf("Error establishing remote host connection: %s", err)
 	}
 
 	log.Printf(
