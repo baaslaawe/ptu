@@ -9,4 +9,5 @@ type Config struct {
 	exposedHost string
 	exposedPort int
 	exposedBind string
+	connectTo   string
 }

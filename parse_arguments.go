@@ -48,6 +48,7 @@ func ParseCommandLineArguments() (*Config, error) {
 		exposedHost: *exposedHost,
 		exposedPort: *exposedPort,
 		exposedBind: concatHostPort(*exposedHost, *exposedPort),
+		connectTo:   mergeHostPort(*sshServer, *exposedPort),
 	}
 
 	return config, nil
@@ -63,4 +64,10 @@ func isHostWithPort(s string) bool { return HostWithPortRegexp.MatchString(s) }
 
 func concatHostPort(host string, port int) string {
 	return strings.Join([]string{host, strconv.Itoa(port)}, ":")
+}
+
+func mergeHostPort(host string, port int) string {
+	bareHost := HostPortPartRegexp.ReplaceAllString(host, "")
+
+	return concatHostPort(bareHost, port)
 }

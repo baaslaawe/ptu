@@ -19,9 +19,11 @@ func DisplayNB() {
 }
 
 func DisplayConfig(config Config) {
-	log.Printf("SSH server             : %s", config.sshServer)
-	log.Printf("SSH username           : %s", config.sshUsername)
-	log.Printf("SSH use agent          : %v", config.sshUseAgent)
-	log.Printf("Exposed bind           : %s", config.exposedBind)
-	log.Printf("Target host            : %s", config.targetHost)
+	log.Printf("SSH server    : %s", config.sshServer)
+	log.Printf("SSH username  : %s", config.sshUsername)
+	log.Printf("SSH use agent : %v", config.sshUseAgent)
+	log.Printf("Target host   : %s", config.targetHost)
+	log.Printf("--------------------------------------------------------------------------------")
+	log.Printf("Connect to (use your specific client software): %s", config.connectTo)
+	log.Printf("--------------------------------------------------------------------------------")
 }

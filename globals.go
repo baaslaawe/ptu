@@ -10,4 +10,5 @@ const (
 var (
 	HelpArgumentRegexp = regexp.MustCompile(`^(-h|--help)$`)
 	HostWithPortRegexp = regexp.MustCompile(`.*:\d+$`)
+	HostPortPartRegexp = regexp.MustCompile(`:\d+$`)
 )
