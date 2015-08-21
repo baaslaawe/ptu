@@ -1,6 +1,4 @@
 ## Portable Tunneling Utility
-
-#### Tunnel everything, tunnel everywhere!
 **ptu** is a simple ad-hoc SSH-based TCP port tunneling application.<br />
 It can expose **any server** in your network, including your localhost, to the Internet.
 
