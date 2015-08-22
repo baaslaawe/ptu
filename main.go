@@ -1,40 +1,43 @@
 package main
 
 import (
+	"./lib/net/forwarder"
+	"./lib/ssh/client"
+	"./lib/ssh/listener"
+	"./lib/util/arguments"
+	"./lib/util/display"
 	"log"
-	"os"
 )
 
 func main() {
 	// Some tender erotic foreplay
-	if len(os.Args) < 2 || IsHelpRequested(os.Args[1]) {
-		DisplayHelp()
-		os.Exit(1)
+	if arguments.IsListEmpty() || arguments.IsHelpRequested() {
+		display.PrintHelpAndExit()
 	}
 
-	config, err := ParseCommandLineArguments()
+	config, err := arguments.Parse()
 	if err != nil {
 		log.Fatalf("Error while parsing command line arguments: %s", err)
 	}
 
-	DisplayNB()
+	display.PrintGatewayPortsNB()
 
-	DisplayConfig(*config)
+	display.PrintConfig(*config)
 
 	// Initialize SSH client
-	sshClient, err := InitSSHClient(*config)
+	sshClient, err := client.New(*config)
 	if err != nil {
 		log.Fatalf("Error initializing SSH client %s", err)
 	}
 
-	// Set up SSH listener <exposed_host>:<exposed_port> on the SSH server <ssh_server>:<ssh_port>
-	sshListener, err := SetupSSHListener(sshClient, config.exposedBind)
+	// Set up SSH listener <exposed_bind>:<exposed_port> on the SSH server <ssh_server>:<ssh_port>
+	sshListener, err := listener.New(sshClient, config.ExposedHost)
 	if err != nil {
 		log.Fatalf("Error setting up SSH listener %s", err)
 	}
 
 	// Vamos muchachos!
 	for {
-		Forward(sshListener, config.targetHost)
+		forwarder.Forward(sshListener, config.TargetHost)
 	}
 }

@@ -1,6 +1,7 @@
-package main
+package client
 
 import (
+	"../../util/config"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"net"
@@ -8,18 +9,18 @@ import (
 )
 
 // Initialize SSH client (our transport backbone)
-func InitSSHClient(config Config) (*ssh.Client, error) {
+func New(config config.Config) (*ssh.Client, error) {
 	sshAuth, err := getSSHAuth(config)
 	if err != nil {
 		return nil, err
 	}
 
 	sshClientConfig := &ssh.ClientConfig{
-		User: config.sshUsername,
+		User: config.SSHUsername,
 		Auth: sshAuth,
 	}
 
-	sshClient, err := ssh.Dial("tcp", config.sshServer, sshClientConfig)
+	sshClient, err := ssh.Dial("tcp", config.SSHServer, sshClientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +28,8 @@ func InitSSHClient(config Config) (*ssh.Client, error) {
 	return sshClient, nil
 }
 
-func getSSHAuth(config Config) ([]ssh.AuthMethod, error) {
-	if config.sshUseAgent {
+func getSSHAuth(config config.Config) ([]ssh.AuthMethod, error) {
+	if config.SSHUseAgent {
 		sshAgentConn, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
 		if err != nil {
 			return nil, err
@@ -44,5 +45,5 @@ func getSSHAuth(config Config) ([]ssh.AuthMethod, error) {
 		return []ssh.AuthMethod{ssh.PublicKeys(sshAgentSigners...)}, nil
 	}
 
-	return []ssh.AuthMethod{ssh.Password(config.sshPassword)}, nil
+	return []ssh.AuthMethod{ssh.Password(config.SSHPassword)}, nil
 }
