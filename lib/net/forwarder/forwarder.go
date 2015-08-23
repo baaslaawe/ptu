@@ -19,9 +19,8 @@ func Forward(sshListener net.Listener, targetHost string) {
 	}
 
 	log.Printf(
-		"[CONN] SSH: %v => %v | HOST: %v => %v",
+		"[CONN] From: %v | Forward: %v => %v",
 		sshConn.RemoteAddr(),
-		sshConn.LocalAddr(),
 		remoteConn.LocalAddr(),
 		remoteConn.RemoteAddr(),
 	)
