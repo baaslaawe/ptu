@@ -1,24 +1,24 @@
 package display
 
 import (
-	"log"
+	"fmt"
 	"os"
 )
 
 func PrintHelpAndExit() {
-	log.Printf("%s %s", name, version)
-	log.Printf("--")
-	log.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [OPTIONS]", name)
-	log.Printf("--")
-	log.Printf("OPTIONS := -t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password>")
+	fmt.Printf("%s %s\n", name, version)
+	fmt.Printf("\n")
+	fmt.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [OPTIONS]\n", name)
+	fmt.Printf("--\n")
+	fmt.Printf("OPTIONS := -t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password>\n")
 
 	os.Exit(1)
 }
 
 func PrintGatewayPortsNB() {
-	log.Print("NB!")
-	log.Print("NB! You may need to enable 'GatewayPorts' option on your SSH server!")
-	log.Print("NB!")
+	fmt.Println("NB!")
+	fmt.Println("NB! You may need to enable 'GatewayPorts' option on your SSH server!")
+	fmt.Println("NB!")
 }
 
 func PrintConfig(
@@ -28,11 +28,16 @@ func PrintConfig(
 	targetHost string,
 	connectTo string,
 ) {
-	log.Printf("SSH server    : %s", sshServer)
-	log.Printf("SSH username  : %s", sshUsername)
-	log.Printf("SSH use agent : %v", sshUseAgent)
-	log.Printf("Target host   : %s", targetHost)
-	log.Printf("--------------------------------------------------------------------------------")
-	log.Printf("Connect to (use your specific client software): %s", connectTo)
-	log.Printf("--------------------------------------------------------------------------------")
+	printSeparator()
+	fmt.Println("SSH server    :", sshServer)
+	fmt.Println("SSH username  :", sshUsername)
+	fmt.Println("SSH use agent :", sshUseAgent)
+	fmt.Println("Target host   :", targetHost)
+	printSeparator()
+	fmt.Println("Connect to (use your specific client software): ", connectTo)
+	printSeparator()
+}
+
+func printSeparator() {
+	fmt.Println("--------------------------------------------------------------------------------")
 }
