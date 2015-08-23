@@ -1,0 +1,4 @@
+#/usr/bin/env bash
+
+find -name "*.go" | xargs -i golint '{}'
+find -name "*.go" | xargs -i go tool vet '{}'

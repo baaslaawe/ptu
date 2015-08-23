@@ -5,9 +5,9 @@ import (
 	"net"
 )
 
-// Set up SSH listener <exposed_host>:<exposed_port> for connection forwarding
-func New(sshClient *ssh.Client, exposedBind string) (net.Listener, error) {
-	sshListener, err := sshClient.Listen("tcp", exposedBind)
+// New sets up a new instance of the <exposed_bind>:<exposed_port> listener
+func New(sshClient *ssh.Client, exposedHost string) (net.Listener, error) {
+	sshListener, err := sshClient.Listen("tcp", exposedHost)
 	if err != nil {
 		return nil, err
 	}

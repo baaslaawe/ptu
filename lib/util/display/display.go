@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// PrintHelpAndExit prints help message and exits with code 1
 func PrintHelpAndExit() {
 	fmt.Printf("%s %s\n", name, version)
 	fmt.Println("--")
@@ -17,12 +18,15 @@ func PrintHelpAndExit() {
 	os.Exit(1)
 }
 
+// PrintGatewayPortsNB prints warning about SSH server 'GatewayPorts' option
+// Read this: http://www.snailbook.com/faq/gatewayports.auto.html
 func PrintGatewayPortsNB() {
 	fmt.Println("NB!")
 	fmt.Println("NB! You may need to enable 'GatewayPorts' option on your SSH server!")
 	fmt.Println("NB!")
 }
 
+// PrintConfig prints runtime configuration info
 func PrintConfig(
 	sshServer string,
 	sshUsername string,
@@ -36,7 +40,7 @@ func PrintConfig(
 	fmt.Println("SSH use agent :", sshUseAgent)
 	fmt.Println("Target host   :", targetHost)
 	printSeparator()
-	fmt.Println("Connect to (use your specific client software): ", connectTo)
+	fmt.Println("Connect to (use your specific client software):", connectTo)
 	printSeparator()
 }
 

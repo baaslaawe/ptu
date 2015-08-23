@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-// Initialize SSH client (our transport backbone)
+// New initializes a new instance of the SSH client (our transport backbone)
 func New(
 	sshServer string,
 	sshUsername string,

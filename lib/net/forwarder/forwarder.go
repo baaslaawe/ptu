@@ -6,14 +6,14 @@ import (
 	"net"
 )
 
-// Forward connection from SSH listener to remote host
+// Forward forwards connections from SSH listener to the target host
 func Forward(sshListener net.Listener, targetHost string) {
 	sshConn, err := sshListener.Accept()
 	if err != nil {
 		log.Printf("Error accepting connection on SSH listener: %s", err)
 	}
 
-	remoteConn, err := net.Dial("tcp", targetHost)
+	targetConn, err := net.Dial("tcp", targetHost)
 	if err != nil {
 		log.Printf("Error establishing remote host connection: %s", err)
 	}
@@ -21,29 +21,29 @@ func Forward(sshListener net.Listener, targetHost string) {
 	log.Printf(
 		"[CONN] From: %v | Forward: %v => %v",
 		sshConn.RemoteAddr(),
-		remoteConn.LocalAddr(),
-		remoteConn.RemoteAddr(),
+		targetConn.LocalAddr(),
+		targetConn.RemoteAddr(),
 	)
 
 	go func() {
-		_, err = io.Copy(sshConn, remoteConn)
+		_, err = io.Copy(sshConn, targetConn)
 		if err != nil {
 			log.Printf(
 				"> ssh => remote IO error: %s (%v => %v)",
 				err,
 				sshConn.RemoteAddr(),
-				remoteConn.RemoteAddr(),
+				targetConn.RemoteAddr(),
 			)
 		}
 	}()
 
 	go func() {
-		_, err = io.Copy(remoteConn, sshConn)
+		_, err = io.Copy(targetConn, sshConn)
 		if err != nil {
 			log.Printf(
 				"< remote => ssh IO error: %s (%v => %v)",
 				err,
-				remoteConn.RemoteAddr(),
+				targetConn.RemoteAddr(),
 				sshConn.RemoteAddr(),
 			)
 		}

@@ -6,17 +6,17 @@ import (
 	"os"
 )
 
-// No arguments passed? :(
+// IsListEmpty checks if no command line arguments were passed
 func IsListEmpty() bool {
 	return len(os.Args) < 2
 }
 
-// Is help requested by passing -h|--help as an argument?
+// IsHelpRequested checks if help was requested (by passing -h|--help as an argument)
 func IsHelpRequested() bool {
 	return helpArgumentRegexp.MatchString(os.Args[1])
 }
 
-// Parse command line arguments, perform some initial validation and variable mutation
+// Parse parses command line arguments, performs some initial validation and variable mutation
 func Parse() (*Config, error) {
 	var sshServer = flag.String("s", defaultSSHServer, "SSH server (host[:port]) to connect")
 	var sshUsername = flag.String("u", defaultSSHUsername, "username to connect SSH server")

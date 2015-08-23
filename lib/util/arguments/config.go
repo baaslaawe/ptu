@@ -1,5 +1,6 @@
 package arguments
 
+// Config is a container for ptu configuration
 type Config struct {
 	SSHServer   string
 	SSHUsername string
