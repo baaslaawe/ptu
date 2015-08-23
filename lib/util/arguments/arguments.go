@@ -1,7 +1,6 @@
 package arguments
 
 import (
-	"../config"
 	"errors"
 	"flag"
 	"os"
@@ -18,10 +17,10 @@ func IsHelpRequested() bool {
 }
 
 // Parse command line arguments, perform some initial validation and variable mutation
-func Parse() (*config.Config, error) {
+func Parse() (*Config, error) {
 	var sshServer = flag.String("s", defaultSSHServer, "SSH server (host[:port]) to connect")
 	var sshUsername = flag.String("u", defaultSSHUsername, "username to connect SSH server")
-	var sshPassword = flag.String("p", defaultSSHPassword, "password to authenticate against SSH server")
+	var sshPassword = flag.String("p", defaultSSHPassword, "password to authenticate against SSH server (do not use, please)")
 	var targetHost = flag.String("t", defaultTargetHost, "target host:port we will forward connections to")
 	var exposedBind = flag.String("b", defaultExposedBind, "bind (listener) to expose on the SSH server side")
 	var exposedPort = flag.Int("e", defaultExposedPort, "port to expose and forward on the SSH server side")
@@ -44,7 +43,7 @@ func Parse() (*config.Config, error) {
 		*targetHost = concatHostPort(*targetHost, defaultTargetPort)
 	}
 
-	config := &config.Config{
+	config := &Config{
 		SSHServer:   *sshServer,
 		SSHUsername: *sshUsername,
 		SSHPassword: *sshPassword,

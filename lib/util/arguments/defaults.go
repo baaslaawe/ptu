@@ -17,7 +17,7 @@ var (
 )
 
 const (
-	dummySSHServer    = "not.a.real.server"
+	dummySSHServer    = "some.ssh.server"
 	dummySSHPassword  = ""
 	baseExposedPort   = 10000
 	defaultSSHPort    = 22

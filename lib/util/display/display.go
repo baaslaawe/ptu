@@ -1,7 +1,6 @@
 package display
 
 import (
-	"../config"
 	"log"
 	"os"
 )
@@ -22,12 +21,18 @@ func PrintGatewayPortsNB() {
 	log.Print("NB!")
 }
 
-func PrintConfig(config config.Config) {
-	log.Printf("SSH server    : %s", config.SSHServer)
-	log.Printf("SSH username  : %s", config.SSHUsername)
-	log.Printf("SSH use agent : %v", config.SSHUseAgent)
-	log.Printf("Target host   : %s", config.TargetHost)
+func PrintConfig(
+	sshServer string,
+	sshUsername string,
+	sshUseAgent bool,
+	targetHost string,
+	connectTo string,
+) {
+	log.Printf("SSH server    : %s", sshServer)
+	log.Printf("SSH username  : %s", sshUsername)
+	log.Printf("SSH use agent : %v", sshUseAgent)
+	log.Printf("Target host   : %s", targetHost)
 	log.Printf("--------------------------------------------------------------------------------")
-	log.Printf("Connect to (use your specific client software): %s", config.ConnectTo)
+	log.Printf("Connect to (use your specific client software): %s", connectTo)
 	log.Printf("--------------------------------------------------------------------------------")
 }

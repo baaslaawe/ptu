@@ -1,7 +1,6 @@
 package client
 
 import (
-	"../../util/config"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"net"
@@ -9,18 +8,23 @@ import (
 )
 
 // Initialize SSH client (our transport backbone)
-func New(config config.Config) (*ssh.Client, error) {
-	sshAuth, err := getSSHAuth(config)
+func New(
+	sshServer string,
+	sshUsername string,
+	sshPassword string,
+	sshUseAgent bool,
+) (*ssh.Client, error) {
+	sshAuth, err := getSSHAuth(sshUseAgent, sshPassword)
 	if err != nil {
 		return nil, err
 	}
 
 	sshClientConfig := &ssh.ClientConfig{
-		User: config.SSHUsername,
+		User: sshUsername,
 		Auth: sshAuth,
 	}
 
-	sshClient, err := ssh.Dial("tcp", config.SSHServer, sshClientConfig)
+	sshClient, err := ssh.Dial("tcp", sshServer, sshClientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -28,22 +32,22 @@ func New(config config.Config) (*ssh.Client, error) {
 	return sshClient, nil
 }
 
-func getSSHAuth(config config.Config) ([]ssh.AuthMethod, error) {
-	if config.SSHUseAgent {
-		sshAgentConn, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
-		if err != nil {
-			return nil, err
-		}
-
-		sshAgent := agent.NewClient(sshAgentConn)
-
-		sshAgentSigners, err := sshAgent.Signers()
-		if err != nil {
-			return nil, err
-		}
-
-		return []ssh.AuthMethod{ssh.PublicKeys(sshAgentSigners...)}, nil
+func getSSHAuth(sshUseAgent bool, sshPassword string) ([]ssh.AuthMethod, error) {
+	if !sshUseAgent {
+		return []ssh.AuthMethod{ssh.Password(sshPassword)}, nil
 	}
 
-	return []ssh.AuthMethod{ssh.Password(config.SSHPassword)}, nil
+	sshAgentConn, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
+	if err != nil {
+		return nil, err
+	}
+
+	sshAgent := agent.NewClient(sshAgentConn)
+
+	sshAgentSigners, err := sshAgent.Signers()
+	if err != nil {
+		return nil, err
+	}
+
+	return []ssh.AuthMethod{ssh.PublicKeys(sshAgentSigners...)}, nil
 }

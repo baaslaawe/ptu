@@ -1,4 +1,4 @@
-package config
+package arguments
 
 type Config struct {
 	SSHServer   string
