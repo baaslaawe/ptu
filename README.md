@@ -42,5 +42,5 @@ Use provided password to login into SSH server.<br />
 **NB!** Using SSH password is possible, but highly undesirable due to security reasons.<br />
 By-default superior option, an SSH authentication agent, is used to authenticate SSH.
 
-#### Typical use case
+## Typical use case
 ![](https://raw.githubusercontent.com/ivanilves/ptu/master/doc/how_it_works.png)
