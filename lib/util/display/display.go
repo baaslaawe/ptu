@@ -7,10 +7,12 @@ import (
 
 func PrintHelpAndExit() {
 	fmt.Printf("%s %s\n", name, version)
-	fmt.Printf("\n")
+	fmt.Println("--")
 	fmt.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [OPTIONS]\n", name)
-	fmt.Printf("--\n")
-	fmt.Printf("OPTIONS := -t <target_host>:<target_port> -e <expose_port> -u <ssh_username> -p <ssh_password>\n")
+	fmt.Println("")
+	fmt.Println("OPTIONS:")
+	fmt.Println("  { -u <ssh_username> | -p <ssh_password> }")
+	fmt.Println("  { -t <target_host>:<target_port> | -b <exposed_bind> | -e <exposed_port> }")
 
 	os.Exit(1)
 }
