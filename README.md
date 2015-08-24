@@ -44,3 +44,7 @@ By-default superior option, an SSH authentication agent, is used to authenticate
 
 ## Typical use case
 ![](https://raw.githubusercontent.com/ivanilves/ptu/master/doc/how_it_works.png)
+
+## NB!
+* Please see SSH server [GatewayPorts](http://www.snailbook.com/faq/gatewayports.auto.html) option.
+* **ptu** runs on your machine and nowhere else. :trollface:
