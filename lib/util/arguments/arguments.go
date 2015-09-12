@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"os"
+	"regexp"
 )
 
 // IsListEmpty checks if no command line arguments were passed
@@ -13,6 +14,7 @@ func IsListEmpty() bool {
 
 // IsHelpRequested checks if help was requested (by passing -h|--help as an argument)
 func IsHelpRequested() bool {
+	var helpArgumentRegexp = regexp.MustCompile(`^(-h|--help)$`)
 	return helpArgumentRegexp.MatchString(os.Args[1])
 }
 
@@ -36,11 +38,11 @@ func Parse() (*Config, error) {
 	}
 
 	if !isHostWithPort(*sshServer) {
-		*sshServer = concatHostPort(*sshServer, defaultSSHPort)
+		*sshServer = joinHostPort(*sshServer, defaultSSHPort)
 	}
 
 	if !isHostWithPort(*targetHost) {
-		*targetHost = concatHostPort(*targetHost, defaultTargetPort)
+		*targetHost = joinHostPort(*targetHost, defaultTargetPort)
 	}
 
 	config := &Config{
@@ -51,7 +53,7 @@ func Parse() (*Config, error) {
 		TargetHost:  *targetHost,
 		ExposedBind: *exposedBind,
 		ExposedPort: *exposedPort,
-		ExposedHost: concatHostPort(*exposedBind, *exposedPort),
+		ExposedHost: joinHostPort(*exposedBind, *exposedPort),
 		ConnectTo:   mergeHostPort(*sshServer, *exposedPort),
 	}
 
