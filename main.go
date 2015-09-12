@@ -7,7 +7,10 @@ import (
 	"./lib/util/arguments"
 	"./lib/util/display"
 	"log"
+	"time"
 )
+
+const retrySeconds = 10
 
 func main() {
 	// Some tender erotic foreplay
@@ -24,20 +27,30 @@ func main() {
 
 	display.PrintConfig(c.SSHServer, c.SSHUsername, c.SSHUseAgent, c.TargetHost, c.ConnectTo)
 
-	// Initialize SSH client
+RETRY:
+	// Initialize SSH client (at least try to!)
 	sshClient, err := client.New(c.SSHServer, c.SSHUsername, c.SSHPassword, c.SSHUseAgent)
 	if err != nil {
-		log.Fatalf("Error initializing SSH client %s", err)
+		log.Printf("Error initializing SSH client: %s (will retry)", err)
+		time.Sleep(retrySeconds * time.Second)
+		goto RETRY
+	} else {
+		log.Printf("[OK] SSH client initialized!")
 	}
 
 	// Set up SSH listener <exposed_bind>:<exposed_port> on the SSH server <ssh_server>:<ssh_port>
 	sshListener, err := listener.New(sshClient, c.ExposedHost)
 	if err != nil {
-		log.Fatalf("Error setting up SSH listener %s", err)
+		log.Fatalf("Error setting up SSH listener: %s", err)
 	}
 
 	// Vamos muchachos!
 	for {
-		forwarder.Forward(sshListener, c.TargetHost)
+		err = forwarder.Forward(sshListener, c.TargetHost)
+		if err != nil {
+			log.Printf("Failure on forwarder (will retry)")
+			time.Sleep(retrySeconds * time.Second)
+			goto RETRY
+		}
 	}
 }
