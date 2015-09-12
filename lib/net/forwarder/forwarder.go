@@ -11,11 +11,15 @@ func Forward(sshListener net.Listener, targetHost string) {
 	sshConn, err := sshListener.Accept()
 	if err != nil {
 		log.Printf("Error accepting connection on SSH listener: %s", err)
+
+		return
 	}
 
 	targetConn, err := net.Dial("tcp", targetHost)
 	if err != nil {
 		log.Printf("Error establishing remote host connection: %s", err)
+
+		return
 	}
 
 	log.Printf(
@@ -34,6 +38,8 @@ func Forward(sshListener net.Listener, targetHost string) {
 				sshConn.RemoteAddr(),
 				targetConn.RemoteAddr(),
 			)
+
+			return
 		}
 	}()
 
@@ -46,6 +52,8 @@ func Forward(sshListener net.Listener, targetHost string) {
 				targetConn.RemoteAddr(),
 				sshConn.RemoteAddr(),
 			)
+
+			return
 		}
 	}()
 }
