@@ -4,7 +4,12 @@ NAME=ptu
 
 for GOOS in darwin linux windows; do
   for GOARCH in 386 amd64; do
-    BINARY_NAME=${NAME}-${GOOS}-${GOARCH}
+    if [ ${GOOS} != "windows" ]; then
+      BINARY_NAME=${NAME}-${GOOS}-${GOARCH}
+    else
+      BINARY_NAME=${NAME}-${GOOS}-${GOARCH}.exe
+    fi
+
     echo "* Building ${BINARY_NAME}"
     export GOOS=${GOOS}
     export GOARCH=${GOARCH}
