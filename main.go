@@ -47,9 +47,9 @@ RETRY:
 
 	// Vamos muchachos!
 	for {
-		err = forwarder.Forward(sshListener, c.TargetHost)
+		err := forwarder.Forward(sshListener, c.TargetHost)
 		if err != nil {
-			log.Printf("Failure on forwarder (will retry)")
+			log.Printf("[OMG] Critical failure on forwarder! Will re-setup SSH connection.")
 			time.Sleep(retrySeconds * time.Second)
 			goto RETRY
 		}

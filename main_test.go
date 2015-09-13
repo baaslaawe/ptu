@@ -1,22 +1,17 @@
 package main
 
 import (
+	"./lib/net/forwarder"
 	"./lib/ssh/client"
+	"./lib/ssh/listener"
 	"./lib/util/arguments"
 
+	"errors"
+	"net/http"
 	"os/user"
 	"testing"
+	"time"
 )
-
-// A "mock" configuration
-var c = &arguments.Config{
-	SSHServer:   "127.0.0.1:22",
-	SSHUseAgent: true,
-	TargetHost:  "www.google.com:443",
-	ExposedBind: "0.0.0.0",
-	ExposedPort: 9999,
-	ExposedHost: "0.0.0.0:9999",
-}
 
 func getSystemUsername() string {
 	user, _ := user.Current()
@@ -24,41 +19,118 @@ func getSystemUsername() string {
 	return user.Username
 }
 
-func TestSSHClient_WithValidCredentials(t *testing.T) {
-	c.SSHUsername = getSystemUsername()
+//
+// Configurations
+//
 
-	_, err := client.New(c.SSHServer, c.SSHUsername, c.SSHPassword, c.SSHUseAgent)
-	//
-	// We should be able to connect to the testing SSH server with valid credentials
-	//
+// One with agent (safe to use your localhost)
+var a = &arguments.Config{
+	SSHServer:   "127.0.0.1:22",
+	SSHUsername: getSystemUsername(),
+	SSHUseAgent: true,
+	ExposedHost: "0.0.0.0:8888",
+}
+
+// One with password (SDF public account)
+var p = &arguments.Config{
+	SSHServer:   "sdf.org:22",
+	SSHUsername: "ptu",
+	SSHPassword: "T0mmyTheCatI5MyName",
+	SSHUseAgent: false,
+	ExposedHost: "127.0.0.1:9999",
+}
+
+func TestSSHClient_with_Agent_and_ValidCredentials(t *testing.T) {
+	_, err := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
 	if err != nil {
-		t.Error("Unable to connect to the SSH server with valid credentials")
+		t.Error("Unable to connect with agent and valid credentials")
 	}
 }
 
-func TestSSHClient_WithInvalidUsername(t *testing.T) {
-	c.SSHUsername = "hijodeputa"
-
-	_, err := client.New(c.SSHServer, c.SSHUsername, c.SSHPassword, c.SSHUseAgent)
-	//
-	// We should NOT be able to connect anywhere with this dummy username
-	//
+func TestSSHClient_with_Agent_and_InvalidUsername(t *testing.T) {
+	_, err := client.New(a.SSHServer, "hijodeputa", a.SSHPassword, a.SSHUseAgent)
 	if err == nil {
-		t.Error("Was able to connect to the SSH server with invalid username :-/")
+		t.Error("Was able to connect with agent and invalid username :-/")
 	}
 }
 
-func TestSSHClient_WithInvalidPassword(t *testing.T) {
-	c.SSHUsername = getSystemUsername()
-	c.SSHPassword = "hayquedecirlomas"
-	c.SSHUseAgent = false
+func TestSSHClient_with_ValidPassword(t *testing.T) {
+	_, err := client.New(p.SSHServer, p.SSHUsername, p.SSHPassword, p.SSHUseAgent)
+	if err != nil {
+		t.Error("Unable to connect with valid password")
+	}
+}
 
-	_, err := client.New(c.SSHServer, c.SSHUsername, c.SSHPassword, c.SSHUseAgent)
-	//
-	// We should NOT be able to connect anywhere with this dummy password
-	//
+func TestSSHClient_with_InvalidPassword(t *testing.T) {
+	_, err := client.New(p.SSHServer, p.SSHUsername, "hayquedecirlomas", p.SSHUseAgent)
 	if err == nil {
-		t.Error("Was able to connect to the SSH server with invalid password :-/")
+		t.Error("Was able to connect with invalid password :-/")
+	}
+}
+
+func TestSSHListener_with_ValidExposedHost(t *testing.T) {
+	sshClient, _ := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+
+	_, err := listener.New(sshClient, a.ExposedHost)
+	if err != nil {
+		t.Error("Unable to set up listener with valid exposed host")
+	}
+}
+
+func TestSSHListener_with_InvalidExposedHost(t *testing.T) {
+	sshClient, _ := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+
+	_, err := listener.New(sshClient, "e8e66ddd26333e68e0cabe5a68c66a16")
+	if err == nil {
+		t.Error("Was able to set up listener with invalid exposed host :-/")
+	}
+}
+
+//
+// This is the most remarkable testing example:
+// It goes all the way from initializing SSH client
+// to checking actual forwarding with HTTP request.
+//
+func TestForwarder(t *testing.T) {
+	l := "127.0.0.1:7777"         // listen to this address:port on SSH server side
+	h := "info.cern.ch:80"        // our mock forwarding target host:port
+	u := "http://127.0.0.1:7777/" // will make outside-in checking HTTP request to this URL
+
+	sshClient, err_c := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+	if err_c != nil {
+		t.Fatal("[FWD] Unable to initialize client:", err_c)
 	}
 
+	sshListener, err_l := listener.New(sshClient, l)
+	if err_l != nil {
+		t.Fatal("[FWD] Unable to set up listener:", err_l)
+	}
+
+	// We run HTTP check as asynchronous goroutine
+	requestErrors := make(chan error)
+	go func() {
+		time.Sleep(2 * time.Second)
+
+		resp, err_h := http.Get(u)
+		if err_h != nil {
+			requestErrors <- errors.New(err_h.Error())
+			return
+		}
+		if resp.StatusCode != 200 {
+			requestErrors <- errors.New("Request returned bad status")
+			return
+		}
+
+		requestErrors <- nil
+	}()
+
+	err_f := forwarder.Forward(sshListener, h)
+	if err_f != nil {
+		t.Error("Unable to set up connection forwarder:", err_f)
+	}
+
+	err_r := <-requestErrors
+	if err_r != nil {
+		t.Error("Failed to check forwarding via HTTP request:", err_r)
+	}
 }
