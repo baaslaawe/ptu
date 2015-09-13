@@ -96,14 +96,14 @@ func TestForwarder(t *testing.T) {
 	h := "info.cern.ch:80"        // our mock forwarding target host:port
 	u := "http://127.0.0.1:7777/" // will make outside-in checking HTTP request to this URL
 
-	sshClient, err_c := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
-	if err_c != nil {
-		t.Fatal("[FWD] Unable to initialize client:", err_c)
+	sshClient, errC := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+	if errC != nil {
+		t.Fatal("[FWD] Unable to initialize client:", errC)
 	}
 
-	sshListener, err_l := listener.New(sshClient, l)
-	if err_l != nil {
-		t.Fatal("[FWD] Unable to set up listener:", err_l)
+	sshListener, errL := listener.New(sshClient, l)
+	if errL != nil {
+		t.Fatal("[FWD] Unable to set up listener:", errL)
 	}
 
 	// We run HTTP check as asynchronous goroutine
@@ -111,9 +111,9 @@ func TestForwarder(t *testing.T) {
 	go func() {
 		time.Sleep(2 * time.Second)
 
-		resp, err_h := http.Get(u)
-		if err_h != nil {
-			requestErrors <- errors.New(err_h.Error())
+		resp, errH := http.Get(u)
+		if errH != nil {
+			requestErrors <- errors.New(errH.Error())
 			return
 		}
 		if resp.StatusCode != 200 {
@@ -124,13 +124,13 @@ func TestForwarder(t *testing.T) {
 		requestErrors <- nil
 	}()
 
-	err_f := forwarder.Forward(sshListener, h)
-	if err_f != nil {
-		t.Error("Unable to set up connection forwarder:", err_f)
+	errF := forwarder.Forward(sshListener, h)
+	if errF != nil {
+		t.Error("Unable to set up connection forwarder:", errF)
 	}
 
-	err_r := <-requestErrors
-	if err_r != nil {
-		t.Error("Failed to check forwarding via HTTP request:", err_r)
+	errR := <-requestErrors
+	if errR != nil {
+		t.Error("Failed to check forwarding via HTTP request:", errR)
 	}
 }

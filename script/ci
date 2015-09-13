@@ -1,4 +1,18 @@
 #/usr/bin/env bash
 
+set -e
+
+echo "* Golint code style check"
 find -name "*.go" | xargs -i golint '{}'
+echo
+
+echo "* Go vet code health check"
 find -name "*.go" | xargs -i go tool vet '{}'
+echo
+
+echo "* Build Go application"
+go build
+echo
+
+echo "[ Specs ]"
+go test
