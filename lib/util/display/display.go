@@ -9,7 +9,7 @@ import (
 func PrintHelpAndExit() {
 	fmt.Printf("%s %s\n", name, version)
 	fmt.Println("--")
-	fmt.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [OPTIONS]\n", name)
+	fmt.Printf("Usage: %s -s <ssh_server>[:<ssh_port>] [OPTIONS]\n", os.Args[0])
 	fmt.Println("")
 	fmt.Println("OPTIONS:")
 	fmt.Println("  { -u <ssh_username> | -p <ssh_password> }")
