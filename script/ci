@@ -16,3 +16,8 @@ echo
 
 echo "[ Specs ]"
 go test
+echo
+
+echo "[ X-Compile ]"
+./script/xcompile
+echo
