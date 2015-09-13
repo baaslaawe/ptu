@@ -3,6 +3,7 @@ package arguments
 import (
 	"log"
 	"math/rand"
+	"os"
 	"os/user"
 	"time"
 )
@@ -26,13 +27,24 @@ const (
 
 func getDefaultExposedPort() int {
 	rand.Seed(time.Now().UnixNano())
+
 	return baseExposedPort + rand.Intn(10000)
 }
 
 func getDefaultSSHUsername() string {
 	currentUser, err := user.Current()
 	if err != nil {
-		log.Panicf("Unable to get current user name!")
+		// TODO:
+		// Replace this quick workaround with a real solution
+		// os/user should work everywhere, reading ENV is bad.
+		// Vladimir Titov spotted this bug. Thank you Vladimir!
+		if os.Getenv("USER") != "" {
+			return os.Getenv("USER")
+		}
+
+		log.Printf("Unable to get current user name!")
+
+		return "ptu"
 	}
 
 	return currentUser.Username
