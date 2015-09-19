@@ -14,7 +14,7 @@ var (
 	defaultExposedPort = getDefaultExposedPort()
 )
 
-// GetDefaultConfig gets default application config
+// GetDefaultConfig() gets default application config
 func GetDefaultConfig() *Config {
 	return &Config{
 		SSHServer:   "",

@@ -15,7 +15,7 @@ const retrySeconds = 10
 
 func main() {
 	// Some tender erotic foreplay
-	if config.IsListEmpty() || config.IsHelpRequested() {
+	if config.IsArgumentListEmpty() || config.IsHelpRequested() {
 		display.PrintHelpAndExit()
 	}
 

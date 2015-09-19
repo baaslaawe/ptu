@@ -20,18 +20,18 @@ type Config struct {
 	ConnectTo   string
 }
 
-// IsListEmpty checks if no command line arguments were passed
-func IsListEmpty() bool {
+// IsListEmpty() checks if no command line arguments were passed
+func IsArgumentListEmpty() bool {
 	return len(os.Args) < 2
 }
 
-// IsHelpRequested checks if help was requested (by passing -h|--help as an argument)
+// IsHelpRequested() checks if help was requested (by passing -h|--help as an argument)
 func IsHelpRequested() bool {
 	var helpArgumentRegexp = regexp.MustCompile(`^(-h|--help)$`)
 	return helpArgumentRegexp.MatchString(os.Args[1])
 }
 
-// ParseArguments parses command line arguments, performs some initial validation and variable mutation
+// ParseArguments() parses command line arguments, performs some initial validation and variable mutation
 func ParseArguments(d *Config) (*Config, error) {
 	var sshServer = flag.String("s", d.SSHServer, "SSH server (host[:port]) to connect")
 	var sshUsername = flag.String("u", d.SSHUsername, "username to connect SSH server")
