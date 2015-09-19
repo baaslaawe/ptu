@@ -14,8 +14,8 @@ var (
 	defaultExposedPort = getDefaultExposedPort()
 )
 
-// GetDefaultConfig() gets default application config
-func GetDefaultConfig() *Config {
+// GetBuiltinDefaultConfig() gets default application config
+func GetBuiltinDefaultConfig() *Config {
 	return &Config{
 		SSHServer:   "",
 		SSHUsername: getDefaultSSHUsername(),

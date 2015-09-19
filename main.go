@@ -19,7 +19,7 @@ func main() {
 		display.PrintHelpAndExit()
 	}
 
-	d := GetDefaultConfig()
+	d := config.GetBuiltinDefaultConfig()
 
 	c, err := config.ParseArguments(d)
 	if err != nil {
