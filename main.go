@@ -4,7 +4,7 @@ import (
 	"./lib/net/forwarder"
 	"./lib/ssh/client"
 	"./lib/ssh/listener"
-	"./lib/util/arguments"
+	"./lib/util/config"
 	"./lib/util/display"
 
 	"log"
@@ -15,11 +15,11 @@ const retrySeconds = 10
 
 func main() {
 	// Some tender erotic foreplay
-	if arguments.IsListEmpty() || arguments.IsHelpRequested() {
+	if config.IsListEmpty() || config.IsHelpRequested() {
 		display.PrintHelpAndExit()
 	}
 
-	c, err := arguments.Parse()
+	c, err := config.ParseArguments()
 	if err != nil {
 		log.Fatalf("Error while parsing command line arguments: %s", err)
 	}

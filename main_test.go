@@ -4,7 +4,7 @@ import (
 	"./lib/net/forwarder"
 	"./lib/ssh/client"
 	"./lib/ssh/listener"
-	"./lib/util/arguments"
+	"./lib/util/config"
 
 	"errors"
 	"net/http"
@@ -24,7 +24,7 @@ func getSystemUsername() string {
 //
 
 // One with agent (safe to use your localhost)
-var a = &arguments.Config{
+var a = &config.Config{
 	SSHServer:   "127.0.0.1:22",
 	SSHUsername: getSystemUsername(),
 	SSHUseAgent: true,
@@ -32,7 +32,7 @@ var a = &arguments.Config{
 }
 
 // One with password (SDF public account)
-var p = &arguments.Config{
+var p = &config.Config{
 	SSHServer:   "sdf.org:22",
 	SSHUsername: "ptu",
 	SSHPassword: "T0mmyTheCatI5MyName",

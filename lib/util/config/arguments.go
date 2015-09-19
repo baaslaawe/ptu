@@ -1,4 +1,4 @@
-package arguments
+package config
 
 import (
 	"errors"
@@ -18,8 +18,8 @@ func IsHelpRequested() bool {
 	return helpArgumentRegexp.MatchString(os.Args[1])
 }
 
-// Parse parses command line arguments, performs some initial validation and variable mutation
-func Parse() (*Config, error) {
+// ParseArguments parses command line arguments, performs some initial validation and variable mutation
+func ParseArguments() (*Config, error) {
 	var sshServer = flag.String("s", defaultSSHServer, "SSH server (host[:port]) to connect")
 	var sshUsername = flag.String("u", defaultSSHUsername, "username to connect SSH server")
 	var sshPassword = flag.String("p", defaultSSHPassword, "password to authenticate against SSH server (do not use, please)")

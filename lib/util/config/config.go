@@ -1,4 +1,4 @@
-package arguments
+package config
 
 // Config is a container for ptu configuration
 type Config struct {
