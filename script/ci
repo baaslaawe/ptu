@@ -18,6 +18,8 @@ echo "[ Specs ]"
 go test
 echo
 
-echo "[ X-Compile ]"
-./script/xcompile
-echo
+if [ ! ${SKIP_XCOMPILE} ]; then
+  echo "[ X-Compile ]"
+  ./script/xcompile
+  echo
+fi
