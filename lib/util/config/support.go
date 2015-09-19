@@ -5,9 +5,9 @@ import (
 	"strconv"
 )
 
-func isSSHServerSet(s string) bool { return s != dummySSHServer }
+func isSSHServerSet(s string) bool { return s != "" }
 
-func isSSHPasswordSet(s string) bool { return s != dummySSHPassword }
+func isSSHPasswordSet(s string) bool { return s != "" }
 
 func isTCPPortValid(port int) bool { return !(port < 1) || (port > 65535) }
 

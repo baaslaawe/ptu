@@ -19,7 +19,9 @@ func main() {
 		display.PrintHelpAndExit()
 	}
 
-	c, err := config.ParseArguments()
+	d := GetDefaultConfig()
+
+	c, err := config.ParseArguments(d)
 	if err != nil {
 		log.Fatalf("Error while parsing command line arguments: %s", err)
 	}

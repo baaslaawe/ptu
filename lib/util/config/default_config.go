@@ -9,17 +9,27 @@ import (
 )
 
 var (
-	defaultSSHServer   = dummySSHServer
 	defaultSSHUsername = getDefaultSSHUsername()
-	defaultSSHPassword = dummySSHPassword
-	defaultTargetHost  = "localhost:22"
 	defaultExposedBind = "0.0.0.0"
 	defaultExposedPort = getDefaultExposedPort()
 )
 
+// GetDefaultConfig gets default application config
+func GetDefaultConfig() *Config {
+	return &Config{
+		SSHServer:   "",
+		SSHUsername: getDefaultSSHUsername(),
+		SSHPassword: "",
+		SSHUseAgent: true,
+		TargetHost:  "localhost:22",
+		ExposedBind: defaultExposedBind,
+		ExposedPort: defaultExposedPort,
+		ExposedHost: joinHostPort(defaultExposedBind, defaultExposedPort),
+		ConnectTo:   "",
+	}
+}
+
 const (
-	dummySSHServer    = "some.ssh.server"
-	dummySSHPassword  = ""
 	baseExposedPort   = 10000
 	defaultSSHPort    = 22
 	defaultTargetPort = 80
