@@ -1,7 +1,6 @@
 package config
 
 import (
-	//"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -9,9 +8,8 @@ import (
 	"strings"
 )
 
-// LoadYAML() loads config from named YAML file and merges it into default config
+// LoadYAML loads config from named YAML file and merges it into default config
 func LoadYAML(name string, d *Config) (*Config, error) {
-	c := d
 	f := getYAMLFileName(name)
 
 	data, errF := ioutil.ReadFile(f)
@@ -19,20 +17,15 @@ func LoadYAML(name string, d *Config) (*Config, error) {
 		return nil, errF
 	}
 
-	errY := yaml.Unmarshal(data, c)
+	errY := yaml.Unmarshal(data, d)
 	if errY != nil {
 		return nil, errY
 	}
 
-	//errM := mergo.Merge(d, c)
-	//if errM != nil {
-	//	return nil, errM
-	//}
-
-	return c, nil
+	return d, nil
 }
 
-// YAMLExists() checks, if named YAML config file exists
+// YAMLExists checks, if named YAML config file exists
 func YAMLExists(name string) bool {
 	y := getYAMLFileName(name)
 	if y == "" {

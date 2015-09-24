@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// Config{} is a container for ptu configuration
+// Config is a container for ptu configuration
 type Config struct {
 	SSHServer   string `yaml:"s"`
 	SSHUsername string `yaml:"u"`
@@ -22,7 +22,7 @@ type Config struct {
 	ConnectTo   string
 }
 
-// IsHelpRequested() checks, if help was requested (by passing -h|--help as an argument)
+// IsHelpRequested checks, if help was requested (by passing -h|--help as an argument)
 func IsHelpRequested() bool {
 	var helpArgumentRegexp = regexp.MustCompile(`^(-h|--help)$`)
 
@@ -33,51 +33,80 @@ func IsHelpRequested() bool {
 	return helpArgumentRegexp.MatchString(os.Args[1])
 }
 
-// ParseArguments() parses command line arguments, performs some initial validation and variable mutation
+// ParseArguments parses command line arguments, performs some initial validation and variable mutation
 func ParseArguments(d *Config) (*Config, error) {
-	var sshServer = flag.String("s", d.SSHServer, "SSH server (host[:port]) to connect")
-	var sshUsername = flag.String("u", d.SSHUsername, "username to connect SSH server")
-	var sshPassword = flag.String("p", d.SSHPassword, "password to authenticate against SSH server")
-	var targetHost = flag.String("t", d.TargetHost, "target host:port we will forward connections to")
-	var exposedBind = flag.String("b", d.ExposedBind, "bind (listener) to expose on the SSH server side")
-	var exposedPort = flag.Int("e", d.ExposedPort, "port to expose and forward on the SSH server side")
+	var fs = flag.String("s", d.SSHServer, "SSH server (host[:port]) to connect")
+	var fu = flag.String("u", d.SSHUsername, "username to connect SSH server")
+	var fp = flag.String("p", d.SSHPassword, "password to authenticate against SSH server")
+	var ft = flag.String("t", d.TargetHost, "target host:port we will forward connections to")
+	var fb = flag.String("b", d.ExposedBind, "bind (listener) to expose on the SSH server side")
+	var fe = flag.Int("e", d.ExposedPort, "port to expose and forward on the SSH server side")
+
+	var YAMLConfig = flag.String("c", "", "YAML config name to load from '~/.ptu' directory")
 
 	flag.Parse()
 
-	if !isSSHServerSet(*sshServer) {
+	c := &Config{
+		SSHServer:   *fs,
+		SSHUsername: *fu,
+		SSHPassword: *fp,
+		TargetHost:  *ft,
+		ExposedBind: *fb,
+		ExposedPort: *fe,
+	}
+
+	c, errA := applyYAMLConfig(*YAMLConfig, c)
+	if errA != nil {
+		return nil, errA
+	}
+
+	c, errP := prepareConfig(c)
+	if errP != nil {
+		return nil, errP
+	}
+
+	return c, nil
+}
+
+func applyYAMLConfig(YAMLConfig string, c *Config) (*Config, error) {
+	if !isStringParamSet(YAMLConfig) {
+		return c, nil
+	}
+
+	a, err := LoadYAML(YAMLConfig, c)
+	if err != nil {
+		return nil, err
+	}
+
+	return a, nil
+}
+
+func prepareConfig(c *Config) (*Config, error) {
+	if !isStringParamSet(c.SSHServer) {
 		return nil, errors.New("SSH server not defined (try to run program with `--help` option)")
 	}
 
-	if !isTCPPortValid(*exposedPort) {
+	if !isTCPPortValid(c.ExposedPort) {
 		return nil, errors.New("exposed TCP port number is invalid")
 	}
 
-	if !isHostWithPort(*sshServer) {
-		*sshServer = joinHostPort(*sshServer, defaultSSHPort)
+	if !isHostWithPort(c.SSHServer) {
+		c.SSHServer = joinHostPort(c.SSHServer, defaultSSHPort)
 	}
 
-	if !isHostWithPort(*targetHost) {
-		*targetHost = joinHostPort(*targetHost, defaultTargetPort)
+	if !isHostWithPort(c.TargetHost) {
+		c.TargetHost = joinHostPort(c.TargetHost, defaultTargetPort)
 	}
 
-	config := &Config{
-		SSHServer:   *sshServer,
-		SSHUsername: *sshUsername,
-		SSHPassword: *sshPassword,
-		SSHUseAgent: !isSSHPasswordSet(*sshPassword),
-		TargetHost:  *targetHost,
-		ExposedBind: *exposedBind,
-		ExposedPort: *exposedPort,
-		ExposedHost: joinHostPort(*exposedBind, *exposedPort),
-		ConnectTo:   mergeHostPort(*sshServer, *exposedPort),
-	}
+	c.SSHUseAgent = !isStringParamSet(c.SSHPassword)
+	c.ExposedHost = joinHostPort(c.ExposedBind, c.ExposedPort)
 
-	return config, nil
+	c.ConnectTo = mergeHostPort(c.SSHServer, c.ExposedPort)
+
+	return c, nil
 }
 
-func isSSHServerSet(s string) bool { return s != "" }
-
-func isSSHPasswordSet(s string) bool { return s != "" }
+func isStringParamSet(s string) bool { return s != "" }
 
 func isTCPPortValid(port int) bool { return !(port < 1) || (port > 65535) }
 

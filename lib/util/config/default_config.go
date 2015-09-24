@@ -20,7 +20,7 @@ var (
 	defaultExposedPort = getDefaultExposedPort()
 )
 
-// LoadDefaults() loads default config either built-in or from default.yaml file (if it exists)
+// LoadDefaults loads default config either built-in or from default.yaml file (if it exists)
 func LoadDefaults() (*Config, error) {
 	if !YAMLExists("default") {
 		return getBuiltinDefaults(), nil
