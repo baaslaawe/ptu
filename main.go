@@ -15,12 +15,17 @@ const retrySeconds = 10
 
 func main() {
 	// Some tender erotic foreplay
-	if config.IsArgumentListEmpty() || config.IsHelpRequested() {
+	if config.IsHelpRequested() {
 		display.PrintHelpAndExit()
 	}
 
-	d := config.GetBuiltinDefaultConfig()
+	// Load defaults: built-in or from file, if it exists
+	d, err := config.LoadDefaults()
+	if err != nil {
+		log.Fatalf("Unable to load defaults: %s", err)
+	}
 
+	// Merge default config with params passed as command line arguments
 	c, err := config.ParseArguments(d)
 	if err != nil {
 		log.Fatalf("Error while parsing command line arguments: %s", err)

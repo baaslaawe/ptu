@@ -8,14 +8,33 @@ import (
 	"time"
 )
 
+const (
+	baseExposedPort   = 10000
+	defaultSSHPort    = 22
+	defaultTargetPort = 80
+)
+
 var (
 	defaultSSHUsername = getDefaultSSHUsername()
 	defaultExposedBind = "0.0.0.0"
 	defaultExposedPort = getDefaultExposedPort()
 )
 
-// GetBuiltinDefaultConfig() gets default application config
-func GetBuiltinDefaultConfig() *Config {
+// LoadDefaults() loads default config either built-in or from default.yaml file (if it exists)
+func LoadDefaults() (*Config, error) {
+	if !YAMLExists("default") {
+		return getBuiltinDefaults(), nil
+	}
+
+	d, err := LoadYAML("default", getBuiltinDefaults())
+	if err != nil {
+		return nil, err
+	}
+
+	return d, nil
+}
+
+func getBuiltinDefaults() *Config {
 	return &Config{
 		SSHServer:   "",
 		SSHUsername: getDefaultSSHUsername(),
@@ -28,12 +47,6 @@ func GetBuiltinDefaultConfig() *Config {
 		ConnectTo:   "",
 	}
 }
-
-const (
-	baseExposedPort   = 10000
-	defaultSSHPort    = 22
-	defaultTargetPort = 80
-)
 
 func getDefaultExposedPort() int {
 	rand.Seed(time.Now().UnixNano())
