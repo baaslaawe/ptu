@@ -33,7 +33,7 @@ func main() {
 
 	display.PrintGatewayPortsNB()
 
-	display.PrintConfig(c.SSHServer, c.SSHUsername, c.SSHUseAgent, c.TargetHost, c.ConnectTo)
+	display.PrintConfig(c.SSHServer, c.SSHUsername, c.SSHUseAgent, c.TargetHost, c.ExposedPort, c.ConnectTo)
 
 RETRY:
 	// Initialize SSH client (at least try to!)

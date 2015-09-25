@@ -2,6 +2,7 @@ package display
 
 import (
 	"fmt"
+	"net"
 	"os"
 )
 
@@ -32,8 +33,11 @@ func PrintConfig(
 	sshUsername string,
 	sshUseAgent bool,
 	targetHost string,
+	exposedPort int,
 	connectTo string,
 ) {
+	h, _, _ := net.SplitHostPort(connectTo)
+
 	printSeparator()
 	fmt.Println("SSH server    :", sshServer)
 	fmt.Println("SSH username  :", sshUsername)
@@ -41,6 +45,11 @@ func PrintConfig(
 	fmt.Println("Target host   :", targetHost)
 	printSeparator()
 	fmt.Println("Connect to (use your specific client software):", connectTo)
+	fmt.Println("")
+	fmt.Println("[ Examples ]")
+	fmt.Printf("%7s : ssh -p %d %s@%s\n", "SSH", exposedPort, sshUsername, h)
+	fmt.Printf("%7s : curl http://%s/\n", "HTTP", connectTo)
+	fmt.Printf("%7s : curl -k https://%s/\n", "HTTPS", connectTo)
 	printSeparator()
 }
 
