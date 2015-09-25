@@ -55,14 +55,39 @@ func ParseArguments(d *Config) (*Config, error) {
 		ExposedPort: *fe,
 	}
 
-	c, errA := applyYAMLConfig(*YAMLConfig, c)
-	if errA != nil {
-		return nil, errA
+	if isStringParamSet(*YAMLConfig) {
+		c, err := applyYAMLConfig(*YAMLConfig, c)
+		if err != nil {
+			return nil, err
+		}
+
+		// This is required to override YAML config settings with ones passed by arguments
+		flag.Visit(func(f *flag.Flag) {
+			switch f.Name {
+			case "s":
+				c.SSHServer = f.Value.String()
+			case "u":
+				c.SSHUsername = f.Value.String()
+
+			case "p":
+				c.SSHPassword = f.Value.String()
+
+			case "t":
+				c.TargetHost = f.Value.String()
+
+			case "b":
+				c.ExposedBind = f.Value.String()
+
+			case "e":
+				e, _ := strconv.Atoi(f.Value.String())
+				c.ExposedPort = e
+			}
+		})
 	}
 
-	c, errP := prepareConfig(c)
-	if errP != nil {
-		return nil, errP
+	c, err := prepareConfig(c)
+	if err != nil {
+		return nil, err
 	}
 
 	return c, nil
