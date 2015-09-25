@@ -9,8 +9,8 @@ import (
 )
 
 // LoadYAML loads config from named YAML file and merges it into default config
-func LoadYAML(name string, d *Config) (*Config, error) {
-	f := getYAMLFileName(name)
+func LoadYAML(name string, dir string, d *Config) (*Config, error) {
+	f := getYAMLFileName(name, dir)
 
 	data, errF := ioutil.ReadFile(f)
 	if errF != nil {
@@ -26,8 +26,8 @@ func LoadYAML(name string, d *Config) (*Config, error) {
 }
 
 // YAMLExists checks, if named YAML config file exists
-func YAMLExists(name string) bool {
-	y := getYAMLFileName(name)
+func YAMLExists(name string, dir string) bool {
+	y := getYAMLFileName(name, dir)
 	if y == "" {
 		return false
 	}
@@ -43,18 +43,8 @@ func YAMLExists(name string) bool {
 	return true
 }
 
-func getYAMLFileName(name string) string {
-	h := getUserHomeDir()
-	if h == "" {
-		return ""
-	}
-
-	s := []string{h, "/.ptu/", name, ".yaml"}
-
-	return strings.Join(s, "")
-}
-
-func getConfigDir() string {
+// GetYAMLConfigDir gets user YAML config directory
+func GetYAMLConfigDir() string {
 	h := getUserHomeDir()
 	if h == "" {
 		return ""
@@ -63,6 +53,12 @@ func getConfigDir() string {
 	s := []string{h, ".ptu"}
 
 	return strings.Join(s, "/")
+}
+
+func getYAMLFileName(name string, dir string) string {
+	s := []string{dir, "/", name, ".yaml"}
+
+	return strings.Join(s, "")
 }
 
 func getUserHomeDir() string {

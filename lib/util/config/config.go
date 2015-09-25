@@ -85,7 +85,7 @@ func ParseArguments(d *Config) (*Config, error) {
 		})
 	}
 
-	c, err := prepareConfig(c)
+	c, err := ValidateConfig(c)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func applyYAMLConfig(YAMLConfig string, c *Config) (*Config, error) {
 		return c, nil
 	}
 
-	a, err := LoadYAML(YAMLConfig, c)
+	a, err := LoadYAML(YAMLConfig, GetYAMLConfigDir(), c)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +106,8 @@ func applyYAMLConfig(YAMLConfig string, c *Config) (*Config, error) {
 	return a, nil
 }
 
-func prepareConfig(c *Config) (*Config, error) {
+// ValidateConfig validates config and prepares for future use
+func ValidateConfig(c *Config) (*Config, error) {
 	if !isStringParamSet(c.SSHServer) {
 		return nil, errors.New("SSH server not defined (try to run program with `--help` option)")
 	}

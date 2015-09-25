@@ -134,3 +134,40 @@ func TestForwarder(t *testing.T) {
 		t.Error("Failed to check forwarding via HTTP request:", errR)
 	}
 }
+
+// Try to load `data/fistro.yaml` and examine what we get...
+func TestYAMLLoader(t *testing.T) {
+	name := "fistro"
+	dir := "data"
+	d := &config.Config{}
+
+	c, errL := config.LoadYAML(name, dir, d)
+	if errL != nil {
+		t.Error(errL)
+	}
+
+	c, errV := config.ValidateConfig(c)
+	if errV != nil {
+		t.Error(errV)
+	}
+
+	if c.SSHServer != "fistro.org:22" {
+		t.Error("Unexpected SSH server:", c.SSHServer)
+	}
+
+	if c.SSHUsername != "pecador" {
+		t.Error("Unexpected SSH username:", c.SSHUsername)
+	}
+
+	if c.SSHUseAgent != true {
+		t.Error("Must use SSH agent")
+	}
+
+	if c.TargetHost != "pradera:80" {
+		t.Error("Unexpected target host:", c.TargetHost)
+	}
+
+	if c.ConnectTo != "fistro.org:11111" {
+		t.Error("Unexpected connection host:", c.ConnectTo)
+	}
+}

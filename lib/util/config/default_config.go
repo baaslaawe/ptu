@@ -22,11 +22,11 @@ var (
 
 // LoadDefaults loads default config either built-in or from default.yaml file (if it exists)
 func LoadDefaults() (*Config, error) {
-	if !YAMLExists("default") {
+	if !YAMLExists("default", GetYAMLConfigDir()) {
 		return getBuiltinDefaults(), nil
 	}
 
-	d, err := LoadYAML("default", getBuiltinDefaults())
+	d, err := LoadYAML("default", GetYAMLConfigDir(), getBuiltinDefaults())
 	if err != nil {
 		return nil, err
 	}
