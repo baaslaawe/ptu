@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os/user"
 	"testing"
-	"time"
 )
 
 func getSystemUsername() string {
@@ -109,8 +108,6 @@ func TestForwarder(t *testing.T) {
 	// We run HTTP check as asynchronous goroutine
 	requestErrors := make(chan error)
 	go func() {
-		time.Sleep(2 * time.Second)
-
 		resp, errH := http.Get(u)
 		if errH != nil {
 			requestErrors <- errors.New(errH.Error())
