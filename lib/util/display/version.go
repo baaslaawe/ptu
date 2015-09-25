@@ -2,5 +2,5 @@ package display
 
 const (
 	name    = "ptu"
-	version = "0.3.1rc"
+	version = "0.3.1"
 )
