@@ -42,6 +42,11 @@ Use provided password to login into SSH server.<br />
 **NB!** Using SSH password is possible, but highly undesirable due to security reasons.<br />
 By-default superior option, an SSH authentication agent, is used to authenticate SSH.
 
+`-c <config_name>`<br />
+Load settings from `~/.ptu/<config_name>.yaml` (see this [example](https://github.com/ivanilves/ptu/blob/master/data/fistro.yaml)).<br />
+If you create file `~/.ptu/default.yaml`, settings stored there will override program built-in defaults.<br/>
+Settings passed by command line arguments always take precedence over settings loaded from file.
+
 ## NB!
 * Please see SSH server [GatewayPorts](http://www.snailbook.com/faq/gatewayports.auto.html) option.
 * **ptu** runs on your machine and nowhere else. :trollface:

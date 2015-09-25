@@ -15,6 +15,7 @@ func PrintHelpAndExit() {
 	fmt.Println("OPTIONS:")
 	fmt.Println("  { -u <ssh_username> | -p <ssh_password> }")
 	fmt.Println("  { -t <target_host>:<target_port> | -b <exposed_bind> | -e <exposed_port> }")
+	fmt.Println("  { -c <config_name> }")
 
 	os.Exit(1)
 }
