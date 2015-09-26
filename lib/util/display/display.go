@@ -36,10 +36,16 @@ func PrintConfig(
 	targetHost string,
 	exposedPort int,
 	connectTo string,
+	buildID string,
 ) {
 	h, _, _ := net.SplitHostPort(connectTo)
 
 	printSeparator()
+	if buildID != "" {
+		printSeparator()
+		fmt.Printf("Build ID: %s\n", buildID)
+		printSeparator()
+	}
 	fmt.Println("SSH server    :", sshServer)
 	fmt.Println("SSH username  :", sshUsername)
 	fmt.Println("SSH use agent :", sshUseAgent)

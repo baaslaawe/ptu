@@ -22,7 +22,7 @@ var (
 
 // LoadDefaults loads default config either built-in or from default.yaml file (if it exists)
 func LoadDefaults() (*Config, error) {
-	if !YAMLExists("default", GetYAMLConfigDir()) {
+	if !YAMLExists("default", GetYAMLConfigDir()) || IsTailored() {
 		return getBuiltinDefaults(), nil
 	}
 
@@ -45,6 +45,7 @@ func getBuiltinDefaults() *Config {
 		ExposedPort: defaultExposedPort,
 		ExposedHost: joinHostPort(defaultExposedBind, defaultExposedPort),
 		ConnectTo:   "",
+		BuildID:     "",
 	}
 }
 
@@ -71,4 +72,9 @@ func getDefaultSSHUsername() string {
 	}
 
 	return currentUser.Username
+}
+
+// IsTailored tells, if default config was tailored
+func IsTailored() bool {
+	return getBuiltinDefaults().BuildID == ""
 }

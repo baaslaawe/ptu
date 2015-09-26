@@ -20,6 +20,7 @@ type Config struct {
 	ExposedPort int    `yaml:"e"`
 	ExposedHost string
 	ConnectTo   string
+	BuildID     string
 }
 
 // IsHelpRequested checks, if help was requested (by passing -h|--help as an argument)
@@ -54,6 +55,8 @@ func ParseArguments(d *Config) (*Config, error) {
 		ExposedBind: *fb,
 		ExposedPort: *fe,
 	}
+
+	c.BuildID = d.BuildID // Build ID is always taken from defaults LOL
 
 	if isStringParamSet(*YAMLConfig) {
 		c, err := applyYAMLConfig(*YAMLConfig, c)
