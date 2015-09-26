@@ -1,4 +1,7 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
+#
+# Simple continuous integration script for a Go project
+#
 
 set -e
 

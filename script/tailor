@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# Tailoring script for PTU project:
+# Create binaries with hard-coded defaults suitable for your environment
+#
+
