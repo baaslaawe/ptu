@@ -76,5 +76,5 @@ func getDefaultSSHUsername() string {
 
 // IsTailored tells, if default config was tailored
 func IsTailored() bool {
-	return getBuiltinDefaults().BuildID == ""
+	return getBuiltinDefaults().BuildID != ""
 }
