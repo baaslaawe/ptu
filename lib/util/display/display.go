@@ -25,9 +25,11 @@ func PrintHelpAndExit() {
 // PrintGatewayPortsNB prints warning about SSH server 'GatewayPorts' option
 // Read this: http://www.snailbook.com/faq/gatewayports.auto.html
 func PrintGatewayPortsNB() {
+	printSeparator()
 	fmt.Println("NB!")
 	fmt.Println("NB! You may need to enable 'GatewayPorts' option on your SSH server!")
 	fmt.Println("NB!")
+	printSeparator()
 }
 
 // PrintConfig prints runtime configuration info
@@ -42,7 +44,6 @@ func PrintConfig(
 ) {
 	h, _, _ := net.SplitHostPort(connectTo)
 
-	printSeparator()
 	if buildID != "" {
 		fmt.Printf("Build ID: %s\n", buildID)
 		printSeparator()
