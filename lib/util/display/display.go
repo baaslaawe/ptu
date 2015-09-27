@@ -55,7 +55,7 @@ func PrintConfig(
 	fmt.Println("Connect to (use your specific client software):", connectTo)
 	fmt.Println("")
 	fmt.Println("[ Examples ]")
-	fmt.Printf("%7s : ssh -p %d %s@%s\n", "SSH", exposedPort, sshUsername, h)
+	fmt.Printf("%7s : ssh -p %d %s\n", "SSH", exposedPort, h)
 	fmt.Printf("%7s : curl http://%s/\n", "HTTP", connectTo)
 	fmt.Printf("%7s : curl -k https://%s/\n", "HTTPS", connectTo)
 	printSeparator()
