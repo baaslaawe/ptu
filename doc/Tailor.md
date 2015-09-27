@@ -49,6 +49,7 @@ for instance upload newly built PTU binaries to S3, you need to set<br/>
 environment variable `PTU_POST_EXEC` content to your desired command.<br/>
 Actually contents of every environment variable with its name starting from<br/>
 `PTU_POST_EXEC` will be executed, so you may launch multiple commands.<br/>
+<br/>
 Placing the line `PTU_POST_EXEC="git push my_remote $(git rev-parse --abbrev-ref HEAD)"`<br/>
 inside the `~/.ptu/tailor_profile` will trigger git push of your tailored branch to your Git remote<br/>
 after a finish of the tailoring process.
