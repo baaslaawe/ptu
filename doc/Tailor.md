@@ -15,8 +15,8 @@ SSH password `5ecuReP@s5` and target (redirect) host set to `evilserver.com:443`
 launch this custom build will start tunneling to `evilserver.com:443` via SSH server `ssh.evilcorp.com`.<br/>
 *As you can see, flags used to tailor PTU are the same flags that are also used for PTU runtime configuration.*<br/>
 <br/>
-**NB!**<br/>
-Windows users, who are not skilled enough to work with "normal" SSH, will benefit most from the tailoring feature.
+**NB!** Windows users not skilled enough to work with "normal" SSH will benefit most from tailoring feature.<br/>
+**NB!** Tailored builds will ignore user YAML config files, because they strictly follow "no attachment" policy. <br/>
 <br/>
 
 #### Environment variables
