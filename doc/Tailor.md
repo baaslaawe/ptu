@@ -20,12 +20,12 @@ launch this custom build will start tunneling to `evilserver.com:443` via SSH se
 <br/>
 
 #### How does it work?
-`./script/tailor` gets the job done in a few very easy steps:
-1. Checks out a new local Git branch from `master` (may override with `BASE_BRANCH` environment variable).
-2. Substitutes default config settings in `lib/util/config/default_config.go` with settings you provided.
-3. Runs a CI to verify nothing is broken. Fails the process, if CI script (`./script/ci`) returns non-zero code.
-4. Commits the changes (`default_config.go` and binaries created by successful CI run) into local branch.
-5. If `PTU_POST_EXEC` environment variable is set, runs its value as a command (e.g. to upload binaries to S3).
+`./script/tailor` gets the job done in a few very easy steps:<br/>
+1. Checks out a new local Git branch from `master` (may override with `BASE_BRANCH` environment variable).<br/>
+2. Substitutes default config settings in `lib/util/config/default_config.go` with settings you provided.<br/>
+3. Runs a CI to verify nothing is broken. Fails the process, if CI script (`./script/ci`) returns non-zero code.<br/>
+4. Commits the changes (`default_config.go` and binaries created by successful CI run) into local branch.<br/>
+5. If `PTU_POST_EXEC` environment variable is set, runs its value as a command (e.g. to upload binaries to S3).<br/>
 
 #### Environment variables
 Besides command line arguments you may also set tailoring defaults via environment variables:
