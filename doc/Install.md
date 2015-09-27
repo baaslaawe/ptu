@@ -17,4 +17,4 @@ gvm use go1.5.1 --default
 
 6. Try to run freshly generated binaries from `./bin` directory.
 
-7. PROFIT!!!
+7. PROFIT!!! :dancer:
