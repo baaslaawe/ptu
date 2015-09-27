@@ -1,4 +1,6 @@
-## Install
+## Installation
+
+*This process is really, really simple and clear. Because it's not Ruby.* :trollface:
 
 1. Install [Go Version Manager](https://github.com/moovweb/gvm) (Go is hellish without it, really)
 

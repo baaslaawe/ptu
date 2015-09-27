@@ -2,6 +2,9 @@
 **ptu** is a simple ad-hoc SSH-based TCP port tunneling application.<br />
 It can expose **any server** in your network, including your localhost, to the Internet.
 
+##### HOWTO: [Installation](https://github.com/ivanilves/ptu/blob/master/doc/Install.md)
+##### HOWTO: [Tailoring](https://github.com/ivanilves/ptu/blob/master/doc/Tailor.md)
+
 #### What problems does it solve?
 Well, with **ptu** you can ...
 * ... provide remote professionals with temporary access to your infrastructure.
