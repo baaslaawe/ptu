@@ -13,7 +13,7 @@
   ```
 
   4. Get all required Golang packages:<br/>
-  `go get -u errors flag fmt golang.org/x/crypto/ssh golang.org/x/crypto/ssh/agent gopkg.in/yaml.v2 io io/ioutil log math/rand net net/http os os/user regexp strconv strings testing time`
+  `go get -u -t errors flag fmt golang.org/x/crypto/ssh golang.org/x/crypto/ssh/agent gopkg.in/yaml.v2 io io/ioutil log math/rand net net/http os os/user regexp strconv strings testing time`
 
   5. Run the continuous integration suite to check compliance: `./script/ci`
 
