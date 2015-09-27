@@ -38,7 +38,7 @@ func IsHelpRequested() bool {
 func ParseArguments(d *Config) (*Config, error) {
 	var fs = flag.String("s", d.SSHServer, "SSH server (host[:port]) to connect")
 	var fu = flag.String("u", d.SSHUsername, "username to connect SSH server")
-	var fp = flag.String("p", d.SSHPassword, "password to authenticate against SSH server")
+	var fp = flag.String("p", "N/A", "password to authenticate against SSH server")
 	var ft = flag.String("t", d.TargetHost, "target host:port we will forward connections to")
 	var fb = flag.String("b", d.ExposedBind, "bind (listener) to expose on the SSH server side")
 	var fe = flag.Int("e", d.ExposedPort, "port to expose and forward on the SSH server side")
@@ -56,7 +56,12 @@ func ParseArguments(d *Config) (*Config, error) {
 		ExposedPort: *fe,
 	}
 
-	c.BuildID = d.BuildID // Build ID is always taken from defaults LOL
+	// We do NOT want to show any password in a help message
+	if c.SSHPassword == "N/A" {
+		c.SSHPassword = d.SSHPassword
+	}
+
+	c.BuildID = d.BuildID // Build ID is always taken from defaults
 
 	if isStringParamSet(*YAMLConfig) {
 		c, err := applyYAMLConfig(*YAMLConfig, c)
