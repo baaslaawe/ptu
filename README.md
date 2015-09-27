@@ -1,5 +1,5 @@
 ## Portable Tunneling Utility
-**ptu** is a simple ad-hoc SSH-based TCP port tunneling application. Written in Go. :smiling_imp: <br />
+**ptu** is a simple ad-hoc SSH-based TCP port tunneling application. Written in **Go**. :smiling_imp: <br />
 It can expose **any server** in your network, including your localhost, to the Internet.
 
 ##### HOWTO: [Installation](https://github.com/ivanilves/ptu/blob/master/doc/Install.md)
