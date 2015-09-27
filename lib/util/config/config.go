@@ -135,7 +135,11 @@ func ValidateConfig(c *Config) (*Config, error) {
 	c.SSHUseAgent = !isStringParamSet(c.SSHPassword)
 	c.ExposedHost = joinHostPort(c.ExposedBind, c.ExposedPort)
 
-	c.ConnectTo = mergeHostPort(c.SSHServer, c.ExposedPort)
+	if c.ExposedBind == "0.0.0.0" {
+		c.ConnectTo = mergeHostPort(c.SSHServer, c.ExposedPort)
+	} else {
+		c.ConnectTo = c.ExposedHost
+	}
 
 	return c, nil
 }
