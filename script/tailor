@@ -121,12 +121,12 @@ fi
 #
 # Reset Git branch before building
 #
-announce "Preparing Git branch..."
+announce "Preparing Git branch"
 
 : ${BASE_BRANCH:="master"}
 : ${BRANCH_PREFIX:="tailor"}
 
-RUN_ID=$(date "+%Y%m%d%H%M%S")${RANDOM}
+RUN_ID=$(date "+%Y%m%d%-H%M%S")-${RANDOM}
 BUILD_ID=${BUILD_NAME}-${RUN_ID}
 BRANCH=${BRANCH_PREFIX}/${BUILD_ID}
 
@@ -168,5 +168,6 @@ git commit -m "Tailored: ${BUILD_ID}"
 # Run optional post-exec command(s)
 #
 if [ "$(env | grep PTU_POST_EXEC)" ]; then
+  announce "Running post-exec commands"
   env | grep PTU_POST_EXEC | awk -F"=" '{print "echo \"=> Running: "$1"\" && "$2}' | /usr/bin/env bash
 fi
