@@ -56,7 +56,7 @@ function tailor_option() {
       suicide "Must pass ${OPT} as integer :-/"
     fi
   fi
- 
+
   sed -i "s|${OPT}: .*,|${OPT}: ${VAL},|" ${TAILORED_FILE}
 }
 
@@ -113,7 +113,7 @@ if [ ! ${BUILD_NAME} ]; then
 fi
 
 if [ ${TAILORED_OPT_NUM} -eq 0 ]; then
-  suicide "No tailored options set. This does not make any sense!" 
+  suicide "No tailored options set. This does not make any sense!"
 fi
 
 if [ ! $(which git) ]; then
@@ -161,6 +161,9 @@ test ${EXPOSED_PORT} && tailor_option "ExposedPort" ${EXPOSED_PORT} "i"
 tailor_option "BuildID" ${BUILD_ID}
 
 ./script/ci
+if [ ${?} -ne 0 ]; then
+  suicide "CI failed!"
+fi
 
 git add "${TAILORED_FILE}"
 git add ./bin
