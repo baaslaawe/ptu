@@ -5,6 +5,8 @@
 #
 test ${DEBUG} && set -x
 
+test -f ~/.ptu/tailor_profile && . ~/.ptu/tailor_profile
+
 TAILORED_FILE="lib/util/config/default_config.go"
 
 function suicide() {
