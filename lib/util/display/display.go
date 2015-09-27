@@ -16,6 +16,8 @@ func PrintHelpAndExit() {
 	fmt.Println("  { -u <ssh_username> | -p <ssh_password> }")
 	fmt.Println("  { -t <target_host>:<target_port> | -b <exposed_bind> | -e <exposed_port> }")
 	fmt.Println("  { -c <config_name> }")
+	fmt.Println("")
+	fmt.Println("See also: https://github.com/ivanilves/ptu/blob/master/README.md")
 
 	os.Exit(1)
 }
@@ -42,7 +44,6 @@ func PrintConfig(
 
 	printSeparator()
 	if buildID != "" {
-		printSeparator()
 		fmt.Printf("Build ID: %s\n", buildID)
 		printSeparator()
 	}
