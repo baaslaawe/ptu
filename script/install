@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+#
+# Install project components
+#
+
+# Linter for Go source code
+go get -u -t github.com/golang/lint/golint
+
+# Go packages used in project
+go get -u -t \
+  errors \
+	flag \
+	fmt \
+	golang.org/x/crypto/ssh \
+	golang.org/x/crypto/ssh/agent \
+	gopkg.in/yaml.v2 \
+	io \
+	io/ioutil \
+	log \
+	math/rand \
+	net \
+	net/http \
+	os os/user \
+	regexp \
+	strconv \
+	strings \
+	testing \
+	time
