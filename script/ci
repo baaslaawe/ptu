@@ -2,15 +2,16 @@
 #
 # Simple continuous integration script for a Go project
 #
+. $(dirname ${0})/_shared
 
 set -e
 
 echo "* Golint code style check"
-find -name "*.go" | xargs -i golint '{}'
+${FIND} -name "*.go" | ${XARGS} -i golint '{}'
 echo
 
 echo "* Go vet code health check"
-find -name "*.go" | xargs -i go tool vet '{}'
+${FIND} -name "*.go" | ${XARGS} -i go tool vet '{}'
 echo
 
 echo "* Build Go application"

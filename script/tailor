@@ -3,16 +3,11 @@
 # Tailoring script for PTU project:
 # Create binaries with hard-coded defaults suitable for your environment
 #
-test ${DEBUG} && set -x
+. $(dirname ${0})/_shared
 
 test -f ~/.ptu/tailor_profile && . ~/.ptu/tailor_profile
 
 TAILORED_FILE="lib/util/config/default_config.go"
-
-function suicide() {
-  echo "ERR: ${@}"
-  exit 1
-}
 
 function print_help() {
   echo "Usage: ${0} -n <build_name> [OPTIONS]"
@@ -57,7 +52,7 @@ function tailor_option() {
     fi
   fi
 
-  sed -i "s|${OPT}: .*,|${OPT}: ${VAL},|" ${TAILORED_FILE}
+  ${SED} -i "s|${OPT}: .*,|${OPT}: ${VAL},|" ${TAILORED_FILE}
 }
 
 #
