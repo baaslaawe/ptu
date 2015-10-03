@@ -31,8 +31,6 @@ func main() {
 		log.Fatalf("Error while parsing command line arguments: %s", err)
 	}
 
-	display.PrintGatewayPortsNB()
-
 	display.PrintConfig(c.SSHServer, c.SSHUsername, c.SSHUseAgent, c.TargetHost, c.ExposedPort, c.ConnectTo, c.BuildID)
 
 RETRY:
@@ -50,6 +48,15 @@ RETRY:
 	sshListener, err := listener.New(sshClient, c.ExposedHost)
 	if err != nil {
 		log.Fatalf("Error setting up SSH listener: %s", err)
+	}
+
+	// Check, if listener really listens to specified bind address (GatewayPorts thing)
+	realExposedBind, err := client.ProbeBindByPort(*sshClient, c.ExposedPort)
+	if err != nil {
+		log.Printf("Error probing exposed bind: %s", err)
+	}
+	if c.ExposedBind != realExposedBind && realExposedBind != "0.0.0.0" {
+		display.PrintGatewayPortsNB()
 	}
 
 	// Vamos muchachos!

@@ -44,6 +44,7 @@ func PrintConfig(
 ) {
 	h, _, _ := net.SplitHostPort(connectTo)
 
+	printSeparator()
 	if buildID != "" {
 		fmt.Printf("Build ID: %s\n", buildID)
 		printSeparator()
