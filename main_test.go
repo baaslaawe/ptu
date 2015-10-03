@@ -1,12 +1,11 @@
 package main
 
 import (
-	"./lib/net/forwarder"
-	"./lib/ssh/client"
-	"./lib/ssh/listener"
-	"./lib/util/config"
-
 	"errors"
+	"github.com/ivanilves/gopack/net/forwarder"
+	"github.com/ivanilves/gopack/ssh/client"
+	"github.com/ivanilves/gopack/ssh/listener"
+	"github.com/ivanilves/gopack/util/config"
 	"net/http"
 	"os/user"
 	"testing"
@@ -68,19 +67,25 @@ func TestSSHClient_with_InvalidPassword(t *testing.T) {
 }
 
 func TestSSHListener_with_ValidExposedHost(t *testing.T) {
-	sshClient, _ := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+	sshClient, errC := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+	if errC != nil {
+		t.Error("Unable to connect with agent and valid credentials")
+	}
 
-	_, err := listener.New(sshClient, a.ExposedHost)
-	if err != nil {
+	_, errL := listener.New(sshClient, a.ExposedHost)
+	if errL != nil {
 		t.Error("Unable to set up listener with valid exposed host")
 	}
 }
 
 func TestSSHListener_with_InvalidExposedHost(t *testing.T) {
-	sshClient, _ := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+	sshClient, errC := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+	if errC != nil {
+		t.Error("Unable to connect with agent and valid credentials")
+	}
 
-	_, err := listener.New(sshClient, "e8e66ddd26333e68e0cabe5a68c66a16")
-	if err == nil {
+	_, errL := listener.New(sshClient, "e8e66ddd26333e68e0cabe5a68c66a16")
+	if errL == nil {
 		t.Error("Was able to set up listener with invalid exposed host :-/")
 	}
 }

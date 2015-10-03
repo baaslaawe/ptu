@@ -25,4 +25,9 @@ go get -u -t \
 	strconv \
 	strings \
 	testing \
-	time
+	time \
+  github.com/ivanilves/gopack/net/forwarder \
+  github.com/ivanilves/gopack/ssh/client \
+  github.com/ivanilves/gopack/ssh/listener \
+  github.com/ivanilves/gopack/util/config \
+  github.com/ivanilves/gopack/util/display

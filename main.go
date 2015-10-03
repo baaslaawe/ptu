@@ -1,12 +1,11 @@
 package main
 
 import (
-	"./lib/net/forwarder"
-	"./lib/ssh/client"
-	"./lib/ssh/listener"
-	"./lib/util/config"
-	"./lib/util/display"
-
+	"github.com/ivanilves/gopack/net/forwarder"
+	"github.com/ivanilves/gopack/ssh/client"
+	"github.com/ivanilves/gopack/ssh/listener"
+	"github.com/ivanilves/gopack/util/config"
+	"github.com/ivanilves/gopack/util/display"
 	"log"
 	"time"
 )

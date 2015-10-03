@@ -19,7 +19,7 @@ go build
 echo
 
 echo "[ Specs ]"
-go test
+go test -v ./...
 echo
 
 if [ ! ${SKIP_XCOMPILE} ]; then
