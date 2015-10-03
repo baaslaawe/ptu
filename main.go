@@ -51,7 +51,7 @@ RETRY:
 	}
 
 	// Check, if listener really listens to specified bind address (GatewayPorts thing)
-	realExposedBind, err := client.ProbeBindByPort(*sshClient, c.ExposedPort)
+	realExposedBind, err := client.ProbeBindByPort(sshClient, c.ExposedPort)
 	if err != nil {
 		log.Printf("Error probing exposed bind: %s", err)
 	}

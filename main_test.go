@@ -168,3 +168,19 @@ func TestYAMLLoader(t *testing.T) {
 		t.Error("Unexpected connection host:", c.ConnectTo)
 	}
 }
+
+func TestProbeBindByPort(t *testing.T) {
+	sshClient, _ := client.New(a.SSHServer, a.SSHUsername, a.SSHPassword, a.SSHUseAgent)
+
+	expectedSSHServerBind := "0.0.0.0"
+	realSSHServerBind, _ := client.ProbeBindByPort(sshClient, 22)
+	if realSSHServerBind != expectedSSHServerBind {
+		t.Error("Unexpected SSH server bind!", "Expected:", expectedSSHServerBind, "Got:", realSSHServerBind)
+	}
+
+	naPort := 2
+	_, err := client.ProbeBindByPort(sshClient, naPort)
+	if err == nil {
+		t.Error("No server should bind to the N/A port:", naPort)
+	}
+}

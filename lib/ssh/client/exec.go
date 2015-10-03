@@ -5,10 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/ssh"
+	"strings"
 )
 
 // ProbeBindByPort tries to probe real listen address for the exposed service (SSH forwarder)
-func ProbeBindByPort(client ssh.Client, port int) (string, error) {
+func ProbeBindByPort(client *ssh.Client, port int) (string, error) {
 	stdout, _, err := executeCommand(
 		client,
 		getBindByPortCommand(port),
@@ -16,6 +17,8 @@ func ProbeBindByPort(client ssh.Client, port int) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	stdout = strings.TrimSpace(stdout)
 	if stdout == "" {
 		return "", errors.New("No output from probe command :-/")
 	}
@@ -24,10 +27,10 @@ func ProbeBindByPort(client ssh.Client, port int) (string, error) {
 }
 
 func getBindByPortCommand(port int) string {
-	return fmt.Sprintf("netstat -nl | grep \"^tcp.*%d\" | head -n1 | awk '{print $4}' | sed 's/:.*//'", port)
+	return fmt.Sprintf("netstat -nl | grep \"^tcp .*:%d \" | awk '{print $4}' | sed 's/:.*//'", port)
 }
 
-func executeCommand(client ssh.Client, command string) (string, string, error) {
+func executeCommand(client *ssh.Client, command string) (string, string, error) {
 	session, err := client.NewSession()
 	if err != nil {
 		return "", "", err
