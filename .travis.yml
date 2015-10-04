@@ -19,3 +19,7 @@ before_install:
 install: "script/install"
 
 script: "script/ci"
+
+branches:
+  except:
+    - /^tailor/
