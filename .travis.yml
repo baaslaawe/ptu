@@ -22,4 +22,5 @@ script: "script/ci"
 
 branches:
   except:
+    - /^doc/
     - /^tailor/
