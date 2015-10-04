@@ -10,12 +10,14 @@ import (
 	"time"
 )
 
+const version = "v0.4.0"
+
 const retrySeconds = 10
 
 func main() {
 	// Some tender erotic foreplay
 	if config.IsHelpRequested() {
-		display.PrintHelpAndExit()
+		display.PrintHelpAndExit(version)
 	}
 
 	// Load defaults: built-in or from file, if it exists
