@@ -1,4 +1,5 @@
-## Portable Tunneling Utility ![](https://travis-ci.org/ivanilves/ptu.svg?branch=master)
+![](https://travis-ci.org/ivanilves/ptu.svg?branch=master)
+## Portable Tunneling Utility
 **ptu** is a simple ad-hoc SSH-based TCP port tunneling application. Written in **Go**. :smiling_imp: <br />
 It can expose **any server** in your network, including your localhost, to the Internet.
 
