@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+#
+# Tailoring script for p.t.u. project:
+# Create binaries with hard-coded defaults suitable for your environment
+#
+. $(dirname ${0})/_shared
+
+test -f ~/.ptu/tailor_profile && . ~/.ptu/tailor_profile
+
+DEFAULTS_FILE="main.go"
+
+function print_help() {
+  echo "Usage: ${0} -n <build_name> [OPTIONS]"
+  echo
+  echo "OPTIONS:"
+  echo "{ -s <ssh_server> | -u <ssh_username> | -p <ssh_password> }"
+  echo "{ -t <target_host>:<target_port> | -b <exposed_bind> | -e <exposed_port> }"
+}
+
+#
+# Modifies a line in the tailored [config] file:
+# Substitutes default field value with passed one.
+#
+function tailor_option() {
+  OPT=${1}
+  VAL=${2}
+  TYPE=${3-"s"}
+
+  if [ ${TYPE} == "s" ]; then
+    DQT='"'
+    VAL=${DQT}${VAL}${DQT}
+  fi
+
+  if [ ${TYPE} == "i" ]; then
+    if ! [[ ${VAL} =~ ^[0-9]+$ ]]; then
+      suicide "Must pass ${OPT} as integer :-/"
+    fi
+  fi
+
+  ${SED} -i "s|${OPT}: .*,$|${OPT}: ${VAL},|" ${DEFAULTS_FILE}
+}
+
+#
+# Parse arguments
+#
+if [ ${#} -eq 0 ]; then
+  print_help
+  exit 1
+fi
+
+if [ ! -f ${DEFAULTS_FILE} ]; then
+  suicide "Defaults file not found: ${DEFAULTS_FILE}"
+fi
+
+TAILORED_OPT_NUM=0
+while getopts "n:s:u:p:t:b:e:h" opt; do
+  case ${opt} in
+    n)
+      BUILD_NAME=${OPTARG}
+    ;;
+    s)
+      SSH_SERVER=${OPTARG}
+      let TAILORED_OPT_NUM+=1
+    ;;
+    u)
+      SSH_USERNAME=${OPTARG}
+      let TAILORED_OPT_NUM+=1
+    ;;
+    p)
+      SSH_PASSWORD=${OPTARG}
+      let TAILORED_OPT_NUM+=1
+    ;;
+    t)
+      TARGET_HOST=${OPTARG}
+      let TAILORED_OPT_NUM+=1
+    ;;
+    b)
+      EXPOSED_BIND=${OPTARG}
+      let TAILORED_OPT_NUM+=1
+    ;;
+    e)
+      EXPOSED_PORT=${OPTARG}
+      let TAILORED_OPT_NUM+=1
+    ;;
+    \?|h)
+      print_help
+      exit 0
+    ;;
+  esac
+done
+
+#
+# Pre-flight checks
+#
+if [ ! ${BUILD_NAME} ]; then
+  suicide "Build name not set!"
+fi
+
+if [ ${TAILORED_OPT_NUM} -eq 0 ]; then
+  suicide "No tailored options set. This does not make any sense!"
+fi
+
+if [ ! $(which git) ]; then
+  suicide "Git executable not found..."
+fi
+
+#
+# Reset Git branch before building
+#
+announce "Preparing Git branch"
+
+: ${BASE_BRANCH:="master"}
+: ${BRANCH_PREFIX:="tailor"}
+
+RUN_ID=$(date "+%Y%m%d-%H%M%S")-${RANDOM}
+BUILD_ID=${BUILD_NAME}-${RUN_ID}
+BRANCH=${BRANCH_PREFIX}/${BUILD_ID}
+
+git stash -u
+git checkout -f ${BASE_BRANCH}
+git reset --hard
+git clean -f -d
+git pull --rebase
+git checkout -b ${BRANCH}
+
+#
+# Tailoring the PTU
+#
+announce "Tailoring build: ${BUILD_ID}"
+
+cp ${DEFAULTS_FILE} ${DEFAULTS_FILE}.orig # backup original defaults file
+
+: ${SSH_SERVER:=${PTU_SSH_SERVER}}
+: ${SSH_USERNAME:=${PTU_SSH_USERNAME}}
+: ${SSH_PASSWORD:=${PTU_SSH_PASSWORD}}
+: ${TARGET_HOST:=${PTU_TARGET_HOST}}
+: ${EXPOSED_BIND:=${PTU_EXPOSED_BIND}}
+: ${EXPOSED_PORT:=${PTU_EXPOSED_PORT}}
+
+test ${SSH_SERVER}   && tailor_option "SSHServer"   ${SSH_SERVER}
+test ${SSH_USERNAME} && tailor_option "SSHUsername" ${SSH_USERNAME}
+test ${SSH_PASSWORD} && tailor_option "SSHPassword" ${SSH_PASSWORD}
+test ${TARGET_HOST}  && tailor_option "TargetHost"  ${TARGET_HOST}
+test ${EXPOSED_BIND} && tailor_option "ExposedBind" ${EXPOSED_BIND}
+test ${EXPOSED_PORT} && tailor_option "ExposedPort" ${EXPOSED_PORT} "i"
+
+tailor_option "BuildID" ${BUILD_ID}
+
+if [ ! ${SKIP_CI} ]; then
+  COMPILE_SCRIPT=./script/ci
+else
+  COMPILE_SCRIPT=./script/xcompile
+fi
+
+${COMPILE_SCRIPT}
+COMPILE_STATUS=$?
+
+mv ${DEFAULTS_FILE}.orig ${DEFAULTS_FILE} # restore original defaults file
+
+if [ ${COMPILE_STATUS} -ne 0 ]; then
+  suicide "${COMPILE_SCRIPT} failed!"
+fi
+
+git add ./bin
+git commit -m "Tailored: ${BUILD_ID}"
+
+#
+# Run optional post-exec command(s)
+#
+if [ "$(set | grep PTU_POST_EXEC)" ]; then
+  announce "Running post-exec commands"
+  set | grep PTU_POST_EXEC | sed "s/='/=/;s/'$//" | awk -F"=" '{print "echo \"=> Running: "$1"\" && "$2}' | /usr/bin/env bash
+fi

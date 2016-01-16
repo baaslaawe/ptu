@@ -1,0 +1,26 @@
+language: go
+
+go:
+  - 1.5.1
+
+notifications:
+  email: false
+
+env:
+  - SKIP_XCOMPILE=yes
+
+before_install:
+  - "sudo apt-get update"
+  - "sudo apt-get -y install openssh-server"
+  - "cat /dev/zero | ssh-keygen -q -N ''"
+  - "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+  - "eval `ssh-agent -s` && ssh-add"
+
+install: "script/install"
+
+script: "script/ci"
+
+branches:
+  except:
+    - /^doc/
+    - /^tailor/

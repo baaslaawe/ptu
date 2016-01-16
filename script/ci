@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# Simple continuous integration script for a Go project
+#
+. $(dirname ${0})/_shared
+
+set -e
+
+echo "* Golint code style check"
+${FIND} -name "*.go" | ${XARGS} -i golint '{}'
+echo
+
+echo "* Go vet code health check"
+${FIND} -name "*.go" | ${XARGS} -i go tool vet '{}'
+echo
+
+echo "* Build Go application"
+go build
+echo
+
+echo "[ Specs ]"
+go test -v ./...
+echo
+
+if [ ! ${SKIP_XCOMPILE} ]; then
+  echo "[ X-Compile ]"
+  ./script/xcompile
+  echo
+fi

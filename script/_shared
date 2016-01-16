@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Shared Bash script code
+#
+test ${DEBUG} && set -x
+
+function suicide() {
+  echo "ERR: ${@}"
+  exit 1
+}
+
+function utility_not_found() {
+  suicide "Utility not found: $1"
+}
+
+function separator() {
+  i=0
+  while [ $i -lt ${1} ]; do
+    echo -n "-"
+    let i+=1
+  done
+  echo
+}
+
+function announce() {
+  separator 80
+  echo "${@}"
+  separator 80
+}
+
+# What utils (find, xargs, sed) will we use?
+if [ "$(uname -s)" == "Linux" ]; then
+  FIND="find"
+  XARGS="xargs"
+  SED="sed"
+else
+  FIND="gfind"
+  XARGS="gxargs"
+  SED="gsed"
+fi
+
+# No money. no honey :-/
+test -e $(which ${FIND})  || utility_not_found ${FIND}
+test -e $(which ${XARGS}) || utility_not_found ${XARGS}
+test -e $(which ${SED})   || utility_not_found ${SED}
