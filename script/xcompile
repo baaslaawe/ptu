@@ -2,15 +2,20 @@
 #
 # Cross-compile Go binaries for all supported platforms
 #
-
 NAME=ptu
 
-for GOOS in darwin linux windows; do
-  for GOARCH in 386 amd64; do
+: ${OPERATING_SYSTEMS:="darwin linux windows"}
+: ${CPU_ARCHITECTURES:="386 amd64"}
+
+[ -n "${BUILD_ID}" ] && SUFFIX="-${BUILD_ID}"
+
+
+for GOOS in ${OPERATING_SYSTEMS}; do
+  for GOARCH in ${CPU_ARCHITECTURES}; do
     if [ ${GOOS} != "windows" ]; then
-      BINARY_NAME=${NAME}-${GOOS}-${GOARCH}
+      BINARY_NAME=${NAME}-${GOOS}-${GOARCH}${SUFFIX}
     else
-      BINARY_NAME=${NAME}-${GOOS}-${GOARCH}.exe
+      BINARY_NAME=${NAME}-${GOOS}-${GOARCH}${SUFFIX}.exe
     fi
 
     echo "* Building ${BINARY_NAME}"

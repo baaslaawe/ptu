@@ -113,7 +113,7 @@ announce "Preparing Git branch"
 : ${BRANCH_PREFIX:="tailor"}
 
 RUN_ID=$(date "+%Y%m%d-%H%M%S")-${RANDOM}
-BUILD_ID=${BUILD_NAME}-${RUN_ID}
+: ${BUILD_ID:="${BUILD_NAME}-b${RUN_ID}"}
 BRANCH=${BRANCH_PREFIX}/${BUILD_ID}
 
 git stash -u
