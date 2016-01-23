@@ -100,32 +100,12 @@ if [ ${TAILORED_OPT_NUM} -eq 0 ]; then
   suicide "No tailored options set. This does not make any sense!"
 fi
 
-if [ ! $(which git) ]; then
-  suicide "Git executable not found..."
-fi
-
-#
-# Reset Git branch before building
-#
-announce "Preparing Git branch"
-
-: ${BASE_BRANCH:="master"}
-: ${BRANCH_PREFIX:="tailor"}
-
-RUN_ID=$(date "+%Y%m%d-%H%M%S")-${RANDOM}
-: ${BUILD_ID:="${BUILD_NAME}-b${RUN_ID}"}
-BRANCH=${BRANCH_PREFIX}/${BUILD_ID}
-
-git stash -u
-git checkout -f ${BASE_BRANCH}
-git reset --hard
-git clean -f -d
-git pull --rebase
-git checkout -b ${BRANCH}
-
 #
 # Tailoring the PTU
 #
+RUN_ID=$(date "+%Y%m%d-%H%M%S")-${RANDOM}
+: ${BUILD_ID:="${BUILD_NAME}-b${RUN_ID}"}
+
 announce "Tailoring build: ${BUILD_ID}"
 
 cp ${DEFAULTS_FILE} ${DEFAULTS_FILE}.orig # backup original defaults file
@@ -160,9 +140,6 @@ mv ${DEFAULTS_FILE}.orig ${DEFAULTS_FILE} # restore original defaults file
 if [ ${COMPILE_STATUS} -ne 0 ]; then
   suicide "${COMPILE_SCRIPT} failed!"
 fi
-
-git add ./bin
-git commit -m "Tailored: ${BUILD_ID}"
 
 #
 # Run optional post-exec command(s)
