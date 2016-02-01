@@ -57,7 +57,7 @@ func configInfo(tunnel sshtunnel.Instance, buildID string) string {
 		separator(),
 		fmt.Sprintln("Build ID :", buildID),
 		separator(),
-		fmt.Sprintln("SSH server    :", tunnel.SSHServer(), "(do NOT connect here, naughty!)"),
+		fmt.Sprintln("SSH server    :", tunnel.SSHServer(), "(do NOT connect here, please!)"),
 		fmt.Sprintln("SSH username  :", tunnel.SSHUsername()),
 		fmt.Sprintln("SSH use agent :", tunnel.SSHUseAgent()),
 		fmt.Sprintln("Target host   :", tunnel.TargetHost()),
