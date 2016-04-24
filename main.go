@@ -21,7 +21,7 @@ const (
 
 	defaultExposedBind = "0.0.0.0"
 	baseExposedPort    = 10000
-	retrySeconds       = 10
+	retrySeconds       = 5
 )
 
 var (
@@ -37,7 +37,8 @@ type Config struct {
 	ExposedBind string `yaml:"b"`
 	ExposedPort int    `yaml:"e"`
 
-	BuildID string
+	BuildID      string
+	FailoverPort int
 }
 
 // loadDefaults loads default config, either built-in or from default.yaml file (if it exists)
@@ -64,7 +65,8 @@ func getBuiltinDefaults() *Config {
 		ExposedBind: defaultExposedBind,
 		ExposedPort: defaultExposedPort,
 
-		BuildID: "Vanilla",
+		BuildID:      "Vanilla",
+		FailoverPort: 0,
 	}
 }
 
@@ -125,8 +127,9 @@ func parseArguments(d *Config) (*Config, error) {
 		c.SSHPassword = d.SSHPassword
 	}
 
-	// Build ID is always taken from the defaults
+	// Build ID & failover port are always taken from the defaults
 	c.BuildID = d.BuildID
+	c.FailoverPort = d.FailoverPort
 
 	// If we use YAML config file, we load settings from it first ...
 	if *yaml != "" {
@@ -187,12 +190,31 @@ func main() {
 		log.Fatalf("Error while parsing command line arguments: %s", err)
 	}
 
+	sshServer := c.SSHServer                                         // This variable may be mutated by failover API, if failover is enabled
+	failoverServer := failoverSSHServer(c.SSHServer, c.FailoverPort) // If failover is enabled, go here on main server connection failure
+	var failoverAPIError error                                       // A placeholder for the failover API error, if OMG we will spot one :/
+
 	for {
 		// Initialize instance of the SSH tunnel (at least try to!)
-		tunnel, errT := sshtunnel.NewInstance(c.SSHServer, c.SSHUsername, c.SSHPassword, c.TargetHost, c.ExposedBind, c.ExposedPort)
+		tunnel, errT := sshtunnel.NewInstance(sshServer, c.SSHUsername, c.SSHPassword, c.TargetHost, c.ExposedBind, c.ExposedPort)
 		if errT != nil {
 			log.Printf("Error initializing SSH tunnel: %s (will retry)", errT)
 			time.Sleep(retrySeconds * time.Second)
+
+			if c.FailoverPort != 0 {
+				if sshServer == c.SSHServer {
+					failoverAPIError = failoverAPIRequest(sshServer, c.BuildID)
+					if failoverAPIError != nil {
+						log.Printf("Failover API request failed: %s", failoverAPIError)
+					} else {
+						sshServer = failoverServer
+						log.Printf("* Will try failover server: %s", failoverServer)
+					}
+				} else {
+					sshServer = c.SSHServer
+				}
+			}
+
 			continue
 		} else {
 			log.Printf("[OK] SSH tunnel initialized!")
