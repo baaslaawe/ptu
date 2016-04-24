@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	version  = "v0.4.1"
-	codename = "Bandido Guapo"
+	version  = "v0.5.0"
+	codename = "Amante Latino"
 
 	defaultExposedBind = "0.0.0.0"
 	baseExposedPort    = 10000
