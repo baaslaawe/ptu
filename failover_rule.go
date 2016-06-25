@@ -8,12 +8,12 @@ import "strconv"
 import "bytes"
 
 // failoverAPIRequest requests a failover rule creation from API [CloudPort] server
-func failoverAPIRequest(sshServer string, failoverBuildId string) error {
+func failoverAPIRequest(sshServer string, failoverBuildID string) error {
 	const apiScheme = "http://"
 	const apiPath = "/failover_rules"
 
 	apiServer, _, _ := net.SplitHostPort(sshServer)
-	apiURL := strings.Join([]string{apiScheme, apiServer, apiPath, "/?id=", failoverBuildId}, "")
+	apiURL := strings.Join([]string{apiScheme, apiServer, apiPath, "/?id=", failoverBuildID}, "")
 
 	r, err := http.Post(apiURL, "text/plain", bytes.NewBuffer(nil))
 

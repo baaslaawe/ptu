@@ -3,12 +3,12 @@ package main
 import "testing"
 import "errors"
 
-const failoverServer = "staging.cloudport.xyz:17702"
+const failoverServer = "staging.cloudport.xyz:11637"
 const failoverPort = 443
-const failoverBuildId = "d2470e"
+const failoverBuildID = "965f82"
 
 func TestFailoverAPIRequest(t *testing.T) {
-	err := failoverAPIRequest(failoverServer, failoverBuildId)
+	err := failoverAPIRequest(failoverServer, failoverBuildID)
 
 	if err != nil {
 		t.Error(err)
@@ -24,7 +24,7 @@ func TestFailoverAPIRequest_withInvalidBuildID(t *testing.T) {
 }
 
 func TestFailoverAPIRequest_withInvalidServer(t *testing.T) {
-	err := failoverAPIRequest("culo", failoverBuildId)
+	err := failoverAPIRequest("culo", failoverBuildID)
 
 	if err == nil {
 		t.Error(errors.New("Reported success with invalid server"))
