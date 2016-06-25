@@ -55,9 +55,8 @@ func gatewayPortsNB() string {
 func configInfo(tunnel sshtunnel.Instance, buildID string) string {
 	return strings.Join([]string{
 		separator(),
-		fmt.Sprintln("Build ID :", buildID),
-		separator(),
-		fmt.Sprintln("Target host   :", tunnel.TargetHost()),
+		fmt.Sprintln("Build ID    :", buildID),
+		fmt.Sprintln("Target host :", tunnel.TargetHost()),
 		separator(),
 		fmt.Sprintln(""),
 		fmt.Sprintln("CONNECT HERE:", tunnel.ConnectTo()),
