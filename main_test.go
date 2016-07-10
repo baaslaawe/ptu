@@ -53,9 +53,8 @@ func TestSSHTunnelInstance_with_Agent_and_InvalidUsername(t *testing.T) {
 func TestYAMLLoader(t *testing.T) {
 	name := "fistro"
 	dir := "data"
-	d := &Config{}
 
-	c, errL := loadYAML(name, dir, d)
+	c, errL := loadYAML(name, dir, &Config{})
 	if errL != nil {
 		t.Error(errL)
 	}
